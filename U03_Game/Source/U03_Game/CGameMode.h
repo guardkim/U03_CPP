@@ -2,11 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "U03_GameGameModeBase.generated.h"
+#include "CGameMode.generated.h"
 
 UCLASS()
-class U03_GAME_API AU03_GameGameModeBase : public AGameModeBase
+class U03_GAME_API ACGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+public:
+	ACGameMode();
 	
 };

@@ -1,8 +1,10 @@
 #include "CPlayer.h"
 #include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CStatusComponent.h"
+#include "Components/COptionComponent.h"
 
 ACPlayer::ACPlayer()
 {
@@ -14,6 +16,7 @@ ACPlayer::ACPlayer()
 
 	//Create ActorComponent
 	CHelpers::CreateActorComponent(this, &Status, "Status");
+	CHelpers::CreateActorComponent(this, &Option, "Option");
 
 	//Component Settings
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -88));
@@ -27,7 +30,6 @@ ACPlayer::ACPlayer()
 	CHelpers::GetAsset<USkeletalMesh>(&mesh, "SkeletalMesh'/Game/Character/Mesh/SK_Mannequin.SK_Mannequin'");
 	GetMesh()->SetSkeletalMesh(mesh);
 
-	bUseControllerRotationYaw = false;
 
 	SpringArm->SetRelativeLocation(FVector(0, 0, 140));
 	SpringArm->SetRelativeRotation(FRotator(0, 90, 0));
@@ -35,6 +37,10 @@ ACPlayer::ACPlayer()
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->bUsePawnControlRotation = true;
 	
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->MaxWalkSpeed = Status->GetSprintSpeed();
+	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0); //Yaw회전이 빨라짐
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 }
 
@@ -63,17 +69,29 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ACPlayer::OnMoveForward(float InAxis)
 {
+	CheckFalse(Status->CanMove()); // Canmove가 true일때만
+	FRotator rotator = FRotator(0, GetControlRotation().Yaw, 0); //전방 방향
+	FVector direction = FQuat(rotator).GetForwardVector();
+	AddMovementInput(direction, InAxis);
 }
 
 void ACPlayer::OnMoveRight(float InAxis)
 {
+	CheckFalse(Status->CanMove()); // Canmove가 true일때만
+	FRotator rotator = FRotator(0, GetControlRotation().Yaw, 0); 
+	FVector direction = FQuat(rotator).GetRightVector();
+	AddMovementInput(direction, InAxis);
 }
 
 void ACPlayer::OnHorizontalLook(float InAxis)
 {
+	float rate = Option->GetHorizontalLookRate();
+	AddControllerYawInput(InAxis * rate * GetWorld()->GetDeltaSeconds());
 }
 
 void ACPlayer::OnVerticalLook(float InAxis)
 {
+	float rate = Option->GetVerticalLookRate();
+	AddControllerPitchInput(InAxis * rate * GetWorld()->GetDeltaSeconds());
 }
 

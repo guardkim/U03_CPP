@@ -1,28 +1,44 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/CStateComponent.h"
+#include "Engine/DataTable.h"
 #include "CMontagesComponent.generated.h"
 
+
+USTRUCT(BlueprintType)
+struct FMontageData// include하려는 헤더파일을 헤더에서 선언해준다, 동적할당을 하는 것이 아니면 헤더쪽에서 인클루드 해줘야한다
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere)
+		EStateType Type;
+	UPROPERTY(EditAnywhere)
+		class UAnimMontage* AnimMontage;
+	UPROPERTY(EditAnywhere)
+		FName StartSection;
+	UPROPERTY(EditAnywhere)
+		bool bCanMove;
+
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class U03_GAME_API UCMontagesComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "DataTable")
+		UDataTable* DataTable;
+
 public:	
-	// Sets default values for this component's properties
 	UCMontagesComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
+	
+private:
+	TArray<FMontageData> MontageDatas;
 };

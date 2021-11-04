@@ -5,6 +5,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CStatusComponent.h"
 #include "Components/COptionComponent.h"
+#include "Components/CStateComponent.h"
+#include "Components/CMontagesComponent.h"
 
 ACPlayer::ACPlayer()
 {
@@ -17,6 +19,8 @@ ACPlayer::ACPlayer()
 	//Create ActorComponent
 	CHelpers::CreateActorComponent(this, &Status, "Status");
 	CHelpers::CreateActorComponent(this, &Option, "Option");
+	CHelpers::CreateActorComponent(this, &States, "States");
+	CHelpers::CreateActorComponent(this, &Montages, "Montages");
 
 	//Component Settings
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -88));

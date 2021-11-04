@@ -7,7 +7,7 @@
 UENUM(BlueprintType)
 enum class EStateType : uint8 //가질수 있는 값 255개
 {
-	Idle, Roll, Backstep
+	Idle, Roll, Backstep, Max
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStateTypeChanged, EStateType, InPrevType, EStateType, InNewType);

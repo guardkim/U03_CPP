@@ -8,7 +8,7 @@
 
 
 USTRUCT(BlueprintType)
-struct FMontageData// include하려는 헤더파일을 헤더에서 선언해준다, 동적할당을 하는 것이 아니면 헤더쪽에서 인클루드 해줘야한다
+struct FMontageData : public FTableRowBase // include하려는 헤더파일을 헤더에서 선언해준다, 동적할당을 하는 것이 아니면 헤더쪽에서 인클루드 해줘야한다
 {
 	GENERATED_BODY()
 
@@ -17,6 +17,8 @@ public:
 		EStateType Type;
 	UPROPERTY(EditAnywhere)
 		class UAnimMontage* AnimMontage;
+	UPROPERTY(EditAnywhere)
+		float PlayRate = 1.0f;
 	UPROPERTY(EditAnywhere)
 		FName StartSection;
 	UPROPERTY(EditAnywhere)
@@ -38,7 +40,10 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	void PlayAnimMontage(EStateType InStateType);
 	
 private:
-	TArray<FMontageData> MontageDatas;
+	FMontageData* Datas[(int32)EStateType::Max];
 };

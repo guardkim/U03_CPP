@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/CStateComponent.h"
 #include "CPlayer.generated.h"
 
 UCLASS()
@@ -23,7 +24,7 @@ private:
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCOptionComponent* Option;
 	UPROPERTY(VisibleDefaultsOnly)
-		class UCStateComponent* States;
+		class UCStateComponent* State;
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCMontagesComponent* Montages;
 public:
@@ -42,4 +43,18 @@ private:
 	void OnMoveRight(float InAxis);
 	void OnHorizontalLook(float InAxis);
 	void OnVerticalLook(float InAxis);
+
+private:
+	void OnEvade();
+	
+private:
+	void Begin_Backstep();
+	void Begin_Roll();
+
+public:
+	void End_Backstep();
+	void End_Roll();
+private:
+	UFUNCTION()
+		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 };

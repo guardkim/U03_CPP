@@ -2,7 +2,6 @@
 #include "Global.h"
 #include "GameFramework/Character.h"
 
-#define NotCompile
 
 UCMontagesComponent::UCMontagesComponent()
 {
@@ -37,8 +36,17 @@ void UCMontagesComponent::PlayAnimMontage(EStateType InStateType)
 		if (!!data->AnimMontage)
 			character->PlayAnimMontage(data->AnimMontage, data->PlayRate, data->StartSection);
 	}
-#ifdef NotComplie
 
-#endif
+}
+
+void UCMontagesComponent::PlayRoll()
+{
+	PlayAnimMontage(EStateType::Roll);
+}
+
+void UCMontagesComponent::PlayBackstep()
+{
+	PlayAnimMontage(EStateType::Backstep);
+
 }
 

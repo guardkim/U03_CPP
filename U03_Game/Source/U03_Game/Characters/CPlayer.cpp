@@ -19,7 +19,7 @@ ACPlayer::ACPlayer()
 	//Create ActorComponent
 	CHelpers::CreateActorComponent(this, &Status, "Status");
 	CHelpers::CreateActorComponent(this, &Option, "Option");
-	CHelpers::CreateActorComponent(this, &States, "States");
+	CHelpers::CreateActorComponent(this, &State, "State");
 	CHelpers::CreateActorComponent(this, &Montages, "Montages");
 
 	//Component Settings
@@ -52,6 +52,7 @@ void ACPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	State->OnStateTypeChanged.AddDynamic(this, &ACPlayer::OnStateTypeChanged);
 }
 
 void ACPlayer::Tick(float DeltaTime)
@@ -68,6 +69,7 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACPlayer::OnMoveRight);
 	PlayerInputComponent->BindAxis("HorizontalLook", this, &ACPlayer::OnHorizontalLook);
 	PlayerInputComponent->BindAxis("VerticalLook", this, &ACPlayer::OnVerticalLook);
+	PlayerInputComponent->BindAction("Evade",EInputEvent::IE_Pressed, this, &ACPlayer::OnEvade);
 
 }
 
@@ -99,3 +101,57 @@ void ACPlayer::OnVerticalLook(float InAxis)
 	AddControllerPitchInput(InAxis * rate * GetWorld()->GetDeltaSeconds());
 }
 
+void ACPlayer::OnEvade()
+{
+	CheckFalse(State->IsIdleMode());
+	CheckFalse(Status->CanMove());
+
+	if (InputComponent->GetAxisValue("MoveForward") < 0.0f) // 뒤로 가고 있다면
+	{
+		State->SetBackstepMode();
+		return;
+	}
+	State->SetRollMode();
+}
+
+void ACPlayer::Begin_Backstep()
+{
+	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+
+	Montages->PlayBackstep();
+}
+
+void ACPlayer::Begin_Roll()
+{
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	FVector start = GetActorLocation();
+	FVector target = start + GetVelocity().GetSafeNormal2D();//GetVelocity가 내가 키를 누른쪽의 벡터가 된다, SafeNormal은 0을 0.001정도로 바꿔준다
+	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(start, target));
+
+	Montages->PlayRoll();
+}
+
+void ACPlayer::End_Backstep()
+{
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	
+	State->SetIdleMode();
+}
+
+void ACPlayer::End_Roll()
+{
+	State->SetIdleMode();
+}
+
+void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
+{
+	switch (InNewType)
+	{
+		case EStateType::Roll: Begin_Roll();			break;
+		case EStateType::Backstep: Begin_Backstep();	break;
+	}
+}

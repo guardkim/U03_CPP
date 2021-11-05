@@ -56,6 +56,6 @@ void UCActionComponent::ChangeType(EActionType InNewType)
 	EActionType prevType = Type;
 	Type = InNewType;
 
-	if (OnActionTypeChanged.IsBound())
-		OnActionTypeChanged.Broadcast(prevType, Type);
+	if (OnActionTypeChanged.IsBound())// Execute()전에 Binding 되었는지 확인
+		OnActionTypeChanged.Broadcast(prevType, Type); // Delegate에 Binding 된 함수들을 실행
 }

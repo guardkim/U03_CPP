@@ -55,7 +55,7 @@ protected:
 
 public:
 	UPROPERTY(BlueprintAssignable)
-		FActionTypeChanged OnActionTypeChanged();
+		FActionTypeChanged OnActionTypeChanged;
 private:
 	EActionType Type;
 };

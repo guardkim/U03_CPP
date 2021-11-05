@@ -45,6 +45,8 @@ private:
 	void OnVerticalLook(float InAxis);
 
 private:
+	void OnWalk();
+	void OffWalk();
 	void OnEvade();
 	
 private:

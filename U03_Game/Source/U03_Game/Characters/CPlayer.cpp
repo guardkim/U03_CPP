@@ -70,6 +70,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("HorizontalLook", this, &ACPlayer::OnHorizontalLook);
 	PlayerInputComponent->BindAxis("VerticalLook", this, &ACPlayer::OnVerticalLook);
 	PlayerInputComponent->BindAction("Evade",EInputEvent::IE_Pressed, this, &ACPlayer::OnEvade);
+	PlayerInputComponent->BindAction("Walk", EInputEvent::IE_Pressed, this, &ACPlayer::OnWalk);
+	PlayerInputComponent->BindAction("Walk", EInputEvent::IE_Released, this, &ACPlayer::OffWalk);
 
 }
 
@@ -99,6 +101,16 @@ void ACPlayer::OnVerticalLook(float InAxis)
 {
 	float rate = Option->GetVerticalLookRate();
 	AddControllerPitchInput(InAxis * rate * GetWorld()->GetDeltaSeconds());
+}
+
+void ACPlayer::OnWalk()
+{
+	GetCharacterMovement()->MaxWalkSpeed = Status->GetRunSpeed();
+}
+
+void ACPlayer::OffWalk()
+{
+	GetCharacterMovement()->MaxWalkSpeed = Status->GetSprintSpeed();
 }
 
 void ACPlayer::OnEvade()

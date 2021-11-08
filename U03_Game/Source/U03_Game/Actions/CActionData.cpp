@@ -8,7 +8,7 @@ void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
 	FTransform transform;
 	if (!!EquipmentClass)
 	{
-		Equipment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACEquipment>(EquipmentClass,transform); 
+		Equipment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACEquipment>(EquipmentClass,transform, InOwnerCharacter);
 		// 메모리에 올라가지만 BeginPlay는 호출 안됨 주로 순서 제어때 사용한다.
 		Equipment->AttachToComponent(InOwnerCharacter->GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepRelative, true));
 		Equipment->SetData(EquipmentData);

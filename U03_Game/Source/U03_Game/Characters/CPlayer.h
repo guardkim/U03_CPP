@@ -58,6 +58,11 @@ private:
 public:
 	void End_Backstep();
 	void End_Roll();
+
+private:
+	void OnFist();
+	void OnOneHand();
+	void OnTwoHand();
 private:
 	UFUNCTION()
 		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);

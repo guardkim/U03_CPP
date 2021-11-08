@@ -1,0 +1,4 @@
+//1108HW unreal actor lifecycle 정리, SpawnActor는 코드를 통해 스폰된 애들
+//UE 가비지컬렉터 U~~MACRO
+//스마트포인터 U를 붙여주면 shared_ptr이나 weak_ptr로 변환됨
+//unique_ptr, shared_ptr, weak_ptr 조사, 사용방법 

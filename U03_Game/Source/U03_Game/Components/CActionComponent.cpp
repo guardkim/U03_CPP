@@ -1,5 +1,7 @@
 #include "CActionComponent.h"
 #include "Global.h"
+#include "Actions/CActionData.h"
+#include "Actions/CEquipment.h"
 
 UCActionComponent::UCActionComponent()
 {
@@ -11,6 +13,12 @@ void UCActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ACharacter* character = Cast<ACharacter>(GetOwner());
+	for (int32 i = 0; i < (int32)EActionType::Max; i++)
+	{
+		if (!!Datas[i])
+			Datas[i]->BeginPlay(character);
+	}
 }
 
 void UCActionComponent::SetUnarmedMode()

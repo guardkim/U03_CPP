@@ -23,6 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UPROPERTY(BlueprintAssignable)
 		FEquipmentDelegate	OnEquipmentDelegate;
 public:	
 
@@ -50,7 +51,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		class UCStatusComponent* Status;
 private:
-	FEquipmentData Data;
+	struct FEquipmentData Data;
 	FLinearColor Color;
 
 };

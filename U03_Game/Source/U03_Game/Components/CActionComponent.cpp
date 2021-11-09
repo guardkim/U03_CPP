@@ -24,6 +24,9 @@ void UCActionComponent::BeginPlay()
 
 void UCActionComponent::SetUnarmedMode()
 {
+	if (!!Datas[(int32)Type])
+		Datas[(int32)Type]->GetEquipment()->UnEquip();
+	Datas[(int32)EActionType::Unarmed]->GetEquipment()->Equip();
 	ChangeType(EActionType::Unarmed); //SetMode를 사용하면 재귀되기 때문에 ChangeType으로 바로 보냄
 }
 void UCActionComponent::SetFistMode()
@@ -58,6 +61,13 @@ void UCActionComponent::SetMode(EActionType InType)
 		SetUnarmedMode();
 		return;
 	}
+	else if (isUnarmedMode() == false)
+	{
+		if (!!Datas[(int32)Type])
+			Datas[(int32)Type]->GetEquipment()->UnEquip();
+	}
+	if (!!Datas[(int32)InType]) // 변경하고자 하는 무기
+		Datas[(int32)InType]->GetEquipment()->Equip();
 	ChangeType(InType);
 }
 void UCActionComponent::ChangeType(EActionType InNewType)

@@ -1,11 +1,19 @@
 #include "CActionData.h"
 #include "Global.h"
-#include "CEquipment.h"
 #include "GameFramework/Character.h"
+#include "CEquipment.h"
+#include "CAttachment.h"
 
 void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
 {
 	FTransform transform;
+	if (!!AttachmentClass)
+	{
+		//L밸류 R밸류 검색...
+		Attachment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACAttachment>(AttachmentClass, transform, InOwnerCharacter);
+		Attachment->SetActorLabel(GetLabelName(InOwnerCharacter, "Attachment"));
+		UGameplayStatics::FinishSpawningActor(Attachment, transform);
+	}
 	if (!!EquipmentClass)
 	{
 		Equipment = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACEquipment>(EquipmentClass,transform, InOwnerCharacter);
@@ -15,7 +23,12 @@ void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
 		Equipment->SetColor(EquipmentColor);
 		Equipment->SetActorLabel(GetLabelName(InOwnerCharacter, "Equipment"));
 		UGameplayStatics::FinishSpawningActor(Equipment,transform); // 메모리에 올라간 Equipment를 확정스폰(BeginPlay를 호출)
-
+		
+		if (!!AttachmentClass)
+		{
+			Equipment->OnEquipmentDelegate.AddDynamic(Attachment, &ACAttachment::OnEquip);
+			Equipment->OnUnEquipmentDelegate.AddDynamic(Attachment, &ACAttachment::OnUnEquip);
+		}
 	}
 }
 

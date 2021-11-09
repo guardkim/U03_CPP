@@ -23,6 +23,8 @@ private:
 
 public:
 	UFUNCTION(BlueprintPure)
+		FORCEINLINE class UCActionData* GetCurrent() { return Datas[(int32)Type]; }
+	UFUNCTION(BlueprintPure)
 		FORCEINLINE bool isUnarmedMode() { return Type == EActionType::Unarmed; }
 	UFUNCTION(BlueprintPure)
 		FORCEINLINE bool isFistMode() { return Type == EActionType::Fist; }

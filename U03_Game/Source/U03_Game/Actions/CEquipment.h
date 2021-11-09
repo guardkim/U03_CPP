@@ -6,6 +6,7 @@
 #include "CEquipment.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEquipmentDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUnEquipmentDelegate);
 
 UCLASS()
 class U03_GAME_API ACEquipment : public AActor
@@ -25,6 +26,8 @@ protected:
 public:
 	UPROPERTY(BlueprintAssignable)
 		FEquipmentDelegate	OnEquipmentDelegate;
+	UPROPERTY(BlueprintAssignable)
+		FUnEquipmentDelegate OnUnEquipmentDelegate;
 public:	
 
 	UFUNCTION(BlueprintNativeEvent)
@@ -51,7 +54,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		class UCStatusComponent* Status;
 private:
-	struct FEquipmentData Data;
+	FEquipmentData Data;
 	FLinearColor Color;
 
 };

@@ -5,7 +5,7 @@
 #include "CActionData.generated.h"
 
 USTRUCT(BlueprintType)
-struct FEquipmentData
+struct FEquipmentData // 디테일 패널
 {
 	GENERATED_BODY()
 
@@ -37,6 +37,8 @@ private:
 	FString GetLabelName(class ACharacter* InOwnerCharacter, FString InName);
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		TSubclassOf<class ACAttachment> AttachmentClass;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TSubclassOf<class ACEquipment> EquipmentClass;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		FEquipmentData EquipmentData;
@@ -45,4 +47,5 @@ public:
 
 private:
 	class ACEquipment* Equipment;
+	class ACAttachment* Attachment;
 };

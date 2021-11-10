@@ -12,7 +12,7 @@ class U03_GAME_API ACEnemy : public ACharacter, public IICharacter
 
 private: //Action, Montage, State, Status
 	UPROPERTY(VisibleDefaultsOnly)
-		class UCActionComponent* Actions;
+		class UCActionComponent* Action;
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCMontagesComponent* Montages;
 	UPROPERTY(VisibleDefaultsOnly)

@@ -49,6 +49,7 @@ class U03_GAME_API UCActionData : public UDataAsset
 
 public:
 	FORCEINLINE class ACEquipment* GetEquipment() { return Equipment; }
+	FORCEINLINE class ACDoAction* GetDoAction() { return DoAction; }
 
 public:
 	void BeginPlay(class ACharacter* InOwnerCharacter);
@@ -65,11 +66,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		FLinearColor EquipmentColor;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-		TSubclassOf<class ACDoAction> InAction; // Name
+		TSubclassOf<class ACDoAction> DoActionClass; 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		TArray<FDoActionData> DoActionDatas;
 private:
 	class ACEquipment* Equipment;
 	class ACAttachment* Attachment;
-	class ACDoAtion* DoAction;
+	class ACDoAction* DoAction;
 };

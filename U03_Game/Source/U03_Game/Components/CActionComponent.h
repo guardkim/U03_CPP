@@ -52,6 +52,8 @@ public:
 	void SetTornadoMode();
 	void SetMagicBallMode();
 
+public:
+	void DoAction();
 private:
 	void SetMode(EActionType InType);
 	void ChangeType(EActionType InNewType);

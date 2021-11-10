@@ -3,6 +3,7 @@
 #include "GameFramework/Character.h"
 #include "Actions/CActionData.h"
 #include "Actions/CEquipment.h"
+#include "Actions/CDoAction.h"
 
 UCActionComponent::UCActionComponent()
 {
@@ -77,4 +78,15 @@ void UCActionComponent::ChangeType(EActionType InNewType)
 
 	if (OnActionTypeChanged.IsBound())// Execute()전에 Binding 되었는지 확인
 		OnActionTypeChanged.Broadcast(prevType, Type); // Delegate에 Binding 된 함수들을 실행
+}
+void UCActionComponent::DoAction()
+{
+	CheckTrue(isUnarmedMode());
+	if (!!Datas[(int32)Type])
+	{
+		ACDoAction* action = Datas[(int32)Type]->GetDoAction();
+
+		if(!!action)
+			action->DoAction();
+	}
 }

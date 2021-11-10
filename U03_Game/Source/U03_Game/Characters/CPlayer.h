@@ -65,6 +65,7 @@ private:
 	void OnOneHand();
 	void OnTwoHand();
 
+	void OnDoAction();
 public:
 	virtual void ChangeColor(FLinearColor InColor) override;
 private:

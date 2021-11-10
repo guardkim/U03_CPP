@@ -7,7 +7,7 @@
 UENUM(BlueprintType)
 enum class EStateType : uint8 //가질수 있는 값 255개
 {
-	Idle, Roll, Backstep, Equip, Max
+	Idle, Roll, Backstep, Equip, Action, Max
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStateTypeChanged, EStateType, InPrevType, EStateType, InNewType);
@@ -26,12 +26,15 @@ public:
 		FORCEINLINE bool IsBackstepMode() { return Type == EStateType::Backstep; }//Idle 상태일때 True 반환
 	UFUNCTION(BlueprintPure)
 		FORCEINLINE bool IsEquipMode() { return Type == EStateType::Equip; }
+	UFUNCTION(BlueprintPure)
+		FORCEINLINE bool IsActionMode() { return Type == EStateType::Action; }
 
 public:
 	void SetIdleMode();
 	void SetRollMode();
 	void SetBackstepMode();
 	void SetEquipMode();
+	void SetActionMode();
 public:	
 	UCStateComponent();
 

@@ -53,6 +53,13 @@ ACEnemy::ACEnemy()
 
 }
 
+float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	CLog::Log(Damage);
+	CLog::Log(DamageCauser);
+	return 0.0f;
+}
+
 void ACEnemy::BeginPlay()
 {
 

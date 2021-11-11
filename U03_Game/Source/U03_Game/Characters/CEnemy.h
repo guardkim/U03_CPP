@@ -27,6 +27,9 @@ private: //Action, Montage, State, Status
 public:
 	ACEnemy();
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	//Pawn.h의 TakeDamage를 재정의 해주면 데미지를 받는쪽이 된다.
+
 protected:
 	virtual void BeginPlay() override;
 

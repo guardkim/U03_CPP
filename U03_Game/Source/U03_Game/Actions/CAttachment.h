@@ -41,7 +41,7 @@ private:
 			int32 OtherBodyIndex,
 			bool bFromSweep,
 			const FHitResult& SweepResult);
-	UFUNCTION() // 이벤트는 클래스 내에서만 사용 할 수있다
+	UFUNCTION() // 이벤트는 클래스 내부에서만 선언하여 사용한다.
 		void OnComponentEndOverlap(
 			UPrimitiveComponent* OverlappedComponent,
 			AActor* OtherActor,

@@ -26,3 +26,19 @@ void ACDoAction_Melee::End_DoAction()
 	State->SetIdleMode();
 	Status->SetMove();
 }
+
+void ACDoAction_Melee::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* InAttackCauser, ACharacter* InOtherCharacter)
+{
+	//충돌되면 실행 될 곳
+	Super::OnAttachmentBeginOverlap(InAttacker,InAttackCauser,InOtherCharacter); 
+
+	FDamageEvent e; //TODO : Damage 이벤트 공부...
+	TakeDamage(Datas[Index].Power,e,InAttacker->GetController(),InAttackCauser); //객체 없이 TakeDamage 함수를 작성하면 데미지를 주는쪽 받는쪽은 재정의하면됨
+
+}
+
+void ACDoAction_Melee::OnAttachmentEndOverlap(ACharacter* InAttacker, AActor* InAttackCauser, ACharacter* InOtherCharacter)
+{
+	Super::OnAttachmentEndOverlap(InAttacker, InAttackCauser, InOtherCharacter);
+
+}

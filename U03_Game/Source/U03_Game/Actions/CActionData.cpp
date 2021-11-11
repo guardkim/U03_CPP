@@ -39,6 +39,12 @@ void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
 		DoAction->SetData(DoActionDatas);
 		DoAction->SetActorLabel(GetLabelName(InOwnerCharacter, "DoAction"));
 		UGameplayStatics::FinishSpawningActor(DoAction, transform);
+
+		if (!!Attachment)
+		{
+			Attachment->OnAttachmentBeginOverlap.AddDynamic(DoAction,&ACDoAction::OnAttachmentBeginOverlap); // 자식에서 재정의
+			Attachment->OnAttachmentEndOverlap.AddDynamic(DoAction,&ACDoAction::OnAttachmentEndOverlap);
+		}
 	}
 }
 

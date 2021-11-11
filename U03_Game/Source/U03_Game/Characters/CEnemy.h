@@ -10,6 +10,11 @@ class U03_GAME_API ACEnemy : public ACharacter, public IICharacter
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(VisibleDefaultsOnly)
+		class UWidgetComponent* NameWidget;
+	UPROPERTY(VisibleDefaultsOnly)
+		class UWidgetComponent* HealthWidget;
 private: //Action, Montage, State, Status
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCActionComponent* Action;

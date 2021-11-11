@@ -33,7 +33,9 @@ void ACDoAction_Melee::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* 
 	Super::OnAttachmentBeginOverlap(InAttacker,InAttackCauser,InOtherCharacter); 
 
 	FDamageEvent e; //TODO : Damage 이벤트 공부...
-	TakeDamage(Datas[Index].Power,e,InAttacker->GetController(),InAttackCauser); //객체 없이 TakeDamage 함수를 작성하면 데미지를 주는쪽 받는쪽은 재정의하면됨
+	InOtherCharacter->TakeDamage(Datas[Index].Power,e,InAttacker->GetController(),InAttackCauser); 
+	//객체 없이 TakeDamage 함수를 작성하면 데미지를 주는쪽 받는쪽은 재정의하면됨
+	//InOtherCharacter == 충돌된 액터 (Enemy) 따라서 Enemy에 재정의 된 TakeDamage가 콜이됨
 
 }
 

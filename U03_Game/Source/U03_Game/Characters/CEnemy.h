@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Characters/ICharacter.h"
+#include "Components/CStateComponent.h"
 #include "CEnemy.generated.h"
 
 UCLASS()
@@ -37,7 +38,16 @@ public:
 	virtual void ChangeColor(FLinearColor InColor) override;
 
 private:
+	UFUNCTION()
+		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
+
+private:
+	void Hitted();
+	void Dead();
+private:
 	class UMaterialInstanceDynamic* BodyMaterial;
 	class UMaterialInstanceDynamic* LogoMaterial;
 
+private:
+	class AController* DamageInstigator;
 };

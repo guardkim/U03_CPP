@@ -4,7 +4,6 @@
 #include "Components/WidgetComponent.h"
 #include "Components/CActionComponent.h"
 #include "Components/CMontagesComponent.h"
-#include "Components/CStateComponent.h"
 #include "Components/CStatusComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -53,13 +52,6 @@ ACEnemy::ACEnemy()
 
 }
 
-float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	CLog::Log(Damage);
-	CLog::Log(DamageCauser);
-	return 0.0f;
-}
-
 void ACEnemy::BeginPlay()
 {
 
@@ -73,20 +65,68 @@ void ACEnemy::BeginPlay()
 	GetMesh()->SetMaterial(0, BodyMaterial);
 	GetMesh()->SetMaterial(1, LogoMaterial);
 
+	State->OnStateTypeChanged.AddDynamic(this, &ACEnemy::OnStateTypeChanged);
+
 
 	Super::BeginPlay();
 
 	NameWidget->InitWidget();
 	Cast<UCUserWidget_Name>(NameWidget->GetUserWidgetObject())->SetNameText(GetName());
 	HealthWidget->InitWidget();
-	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(),Status->GetHealth());
+	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
+
 	Action->SetUnarmedMode();
-	
+
 }
+
+float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	//CLog::Log(Damage); //DA_Player의 Power값
+
+	float damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser); // 받은 데미지가 리턴됨
+	DamageInstigator = EventInstigator;
+
+	Status->SubHealth(damage);
+
+	if (Status->GetHealth() <= 0.0f)
+	{
+		State->SetDeadMode();
+		return 0.0f;
+	}
+
+	State->SetHittedMode();
+
+	return Status->GetHealth();
+}
+
+void ACEnemy::Hitted()
+{
+	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
+	Montages->PlayHitted();
+}
+
+void ACEnemy::Dead()
+{
+	//Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
+	//Montages->PlayDead();
+}
+
+
 
 void ACEnemy::ChangeColor(FLinearColor InColor)
 {
 	BodyMaterial->SetVectorParameterValue("BodyColor", InColor);
 	LogoMaterial->SetVectorParameterValue("BodyColor", InColor);
 }
+
+void ACEnemy::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
+{
+	//상태가 변경될 때 함수 실행
+	switch (InNewType)
+	{
+	case EStateType::Hitted: Hitted(); break;
+		case EStateType::Dead: Dead(); break;
+	}
+}
+
 

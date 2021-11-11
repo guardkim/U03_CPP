@@ -47,6 +47,15 @@ void UCMontagesComponent::PlayRoll()
 void UCMontagesComponent::PlayBackstep()
 {
 	PlayAnimMontage(EStateType::Backstep);
+}
 
+void UCMontagesComponent::PlayHitted()
+{
+	PlayAnimMontage(EStateType::Hitted);
+}
+
+void UCMontagesComponent::PlayDead()
+{
+	PlayAnimMontage(EStateType::Dead);
 }
 

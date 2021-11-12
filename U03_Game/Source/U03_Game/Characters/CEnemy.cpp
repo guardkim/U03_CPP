@@ -9,7 +9,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Widgets/CUserWidget_Name.h"
 #include "Widgets/CUserWidget_Health.h"
-
+#include "Actions/CActionData.h"
 ACEnemy::ACEnemy()
 {
 	//Scene Component
@@ -103,6 +103,19 @@ void ACEnemy::Hitted()
 {
 	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
 	Montages->PlayHitted();
+
+	FVector start = GetActorLocation();
+	FVector target = DamageInstigator->GetPawn()->GetActorLocation();
+	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(start,target));
+	
+	FVector direction = target - start; 
+	direction.Normalize();
+	LaunchCharacter(-direction * LaunchValue, true,false); 
+	//WorldOffset(블프) 캐릭터 뒤로 미는 함수 XYOverride = 평면으로 밀릴건지, ZOverride 공중도 고려할건지 
+
+	ChangeColor(FLinearColor::Red);
+
+	UKismetSystemLibrary::K2_SetTimer(this, "ResetColor", 1.0f, false);
 }
 
 void ACEnemy::Dead()
@@ -115,8 +128,24 @@ void ACEnemy::Dead()
 
 void ACEnemy::ChangeColor(FLinearColor InColor)
 {
+	if (State->IsHittedMode())
+	{
+		FLinearColor color = InColor * 30.0f;
+		LogoMaterial->SetVectorParameterValue("LogoLight", color);
+		LogoMaterial->SetScalarParameterValue("UseLight", State->IsHittedMode() ? 1 : 0);
+
+		return;
+	}
 	BodyMaterial->SetVectorParameterValue("BodyColor", InColor);
 	LogoMaterial->SetVectorParameterValue("BodyColor", InColor);
+}
+
+void ACEnemy::ResetColor()
+{
+	FLinearColor color = Action->GetCurrent()->GetEquipmentColor();
+
+	LogoMaterial->SetVectorParameterValue("LogoLight", color);
+	LogoMaterial->SetScalarParameterValue("UseLight", 0);
 }
 
 void ACEnemy::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)

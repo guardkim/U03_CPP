@@ -11,6 +11,10 @@ class U03_GAME_API ACEnemy : public ACharacter, public IICharacter
 {
 	GENERATED_BODY()
 
+
+private:
+	UPROPERTY(EditDefaultsOnly)
+		float LaunchValue = 100.0f;
 private:
 	UPROPERTY(VisibleDefaultsOnly)
 		class UWidgetComponent* NameWidget;
@@ -37,6 +41,8 @@ protected:
 public:
 	virtual void ChangeColor(FLinearColor InColor) override;
 
+	UFUNCTION()
+		void ResetColor();
 private:
 	UFUNCTION()
 		void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);

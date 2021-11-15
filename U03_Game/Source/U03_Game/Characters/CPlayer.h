@@ -64,8 +64,10 @@ private:
 	void OnFist();
 	void OnOneHand();
 	void OnTwoHand();
+	void OnMagicBall();
 
 	void OnDoAction();
+	void OnAim();
 public:
 	virtual void ChangeColor(FLinearColor InColor) override;
 private:

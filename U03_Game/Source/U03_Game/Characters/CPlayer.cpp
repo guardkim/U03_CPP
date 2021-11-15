@@ -95,6 +95,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("OneHand", EInputEvent::IE_Pressed, this, &ACPlayer::OnOneHand);
 	PlayerInputComponent->BindAction("TwoHand", EInputEvent::IE_Pressed, this, &ACPlayer::OnTwoHand);
 	PlayerInputComponent->BindAction("Action", EInputEvent::IE_Pressed, this, &ACPlayer::OnDoAction);
+	PlayerInputComponent->BindAction("MagicBall", EInputEvent::IE_Pressed, this, &ACPlayer::OnMagicBall);
+	PlayerInputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ACPlayer::OnAim);
 }
 
 void ACPlayer::OnMoveForward(float InAxis)
@@ -205,6 +207,17 @@ void ACPlayer::OnTwoHand()
 	CheckFalse(State->IsIdleMode());
 	Action->SetTwoHandMode();
 }
+
+void ACPlayer::OnMagicBall()
+{
+	CheckFalse(State->IsIdleMode());
+	Action->SetMagicBallMode();
+}
+void ACPlayer::OnAim()
+{
+
+}
+
 
 void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {

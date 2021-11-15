@@ -57,15 +57,45 @@ void ACDoAction_Melee::End_DoAction()
 void ACDoAction_Melee::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* InAttackCauser, ACharacter* InOtherCharacter)
 {
 	//충돌되면 실행 될 곳
-	Super::OnAttachmentBeginOverlap(InAttacker,InAttackCauser,InOtherCharacter); 
+	Super::OnAttachmentBeginOverlap(InAttacker, InAttackCauser, InOtherCharacter);
 
-	//중복타격 방지
+
+
+	//중복타격 방지, 한번 피격된 캐릭터는 충돌 처리에서 제외
 	for (const ACharacter* other : HittedCharacter)
 	{
 		if (other == InOtherCharacter)
-		return;
+			return;
 	}
 	HittedCharacter.Add(InOtherCharacter);
+
+	//히트스탑
+	float hitStop = Datas[Index].HitStop;
+	if (FMath::IsNearlyZero(hitStop) == false)//hitStop이 0에 거의 가깝다면(즉 0이 아니면)
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 2e-2f);
+		UKismetSystemLibrary::K2_SetTimer(this, "RestoreGlobalTimeDilation", hitStop * 2e-2f, false);
+	}
+
+	//히트 파티클
+
+	UParticleSystem* hitEffect = Datas[Index].Effect;
+	if (!!hitEffect)
+	{
+		FTransform transform = Datas[Index].EffectTransform;
+		transform.AddToTranslation(InOtherCharacter->GetActorLocation()); // 맞는적의 Transform에서 
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitEffect, transform);
+	}
+
+	//Camera Shake
+	TSubclassOf<UCameraShake> shake = Datas[Index].ShakeClass;
+	if (!!shake)
+	{
+		APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (!!controller)
+			controller->PlayerCameraManager->PlayCameraShake(shake);
+	}
+	//실제 데미지 전달
 	FDamageEvent e; //TODO : Damage 이벤트 공부...
 	InOtherCharacter->TakeDamage(Datas[Index].Power,e,InAttacker->GetController(),InAttackCauser); 
 	//객체 없이 TakeDamage 함수를 작성하면 데미지를 주는쪽 받는쪽은 재정의하면됨
@@ -78,4 +108,8 @@ void ACDoAction_Melee::OnAttachmentEndOverlap(ACharacter* InAttacker, AActor* In
 	Super::OnAttachmentEndOverlap(InAttacker, InAttackCauser, InOtherCharacter);
 	//타수 종료
 	HittedCharacter.Empty();
+}
+void ACDoAction_Melee::RestoreGlobalTimeDilation()
+{
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 }

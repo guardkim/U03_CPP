@@ -23,6 +23,9 @@ public:
 	virtual void OnAttachmentBeginOverlap(class ACharacter* InAttacker, class AActor* InAttackCauser, class ACharacter* InOtherCharacter) override;
 	virtual void OnAttachmentEndOverlap(class ACharacter* InAttacker, class AActor* InAttackCauser, class ACharacter* InOtherCharacter) override;
 private:
+	UFUNCTION() //타이머 쓸땐 UFUNCTION
+		void RestoreGlobalTimeDilation();
+private:
 	int32 Index; //Combo Count
 
 	//콤보 허용 구간

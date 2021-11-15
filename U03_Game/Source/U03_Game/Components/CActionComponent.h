@@ -53,6 +53,8 @@ public:
 	void SetTornadoMode();
 	void SetMagicBallMode();
 
+	void OffAllCollision();
+
 public:
 	void DoAction();
 private:

@@ -120,8 +120,9 @@ void ACEnemy::Hitted()
 
 void ACEnemy::Dead()
 {
-	//Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
-	//Montages->PlayDead();
+	CheckFalse(State->IsDeadMode());
+	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
+	Montages->PlayDead();
 }
 
 

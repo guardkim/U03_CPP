@@ -16,7 +16,9 @@ private:
 		class USceneComponent* Scene;
 protected:
 	UFUNCTION(BlueprintCallable)
-		void AttachTo(FName InSocketName);
+		void AttachTo(FName InSocketName);// 무기 Actor를 다른 액터에 붙이는 역할( AttachToComponent)
+	UFUNCTION(BlueprintCallable)
+		void AttachToCollision(class USceneComponent* InComponent, FName InSocketName);
 
 public:
 	UFUNCTION(BlueprintImplementableEvent)

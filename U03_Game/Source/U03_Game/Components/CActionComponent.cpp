@@ -91,6 +91,28 @@ void UCActionComponent::DoAction()
 			action->DoAction();
 	}
 }
+void UCActionComponent::DoOnAim()
+{
+	CheckTrue(isUnarmedMode());
+	if (!!Datas[(int32)Type])
+	{
+		ACDoAction* action = Datas[(int32)Type]->GetDoAction();
+
+		if (!!action)
+			action->OnAim();
+	}
+}
+void UCActionComponent::DoOffAim()
+{
+	CheckTrue(isUnarmedMode());
+	if (!!Datas[(int32)Type])
+	{
+		ACDoAction* action = Datas[(int32)Type]->GetDoAction();
+
+		if (!!action)
+			action->OffAim();
+	}
+}
 void UCActionComponent::OffAllCollision()
 {
 	for (UCActionData* data : Datas)

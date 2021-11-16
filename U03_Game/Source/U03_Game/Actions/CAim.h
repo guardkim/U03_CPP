@@ -15,6 +15,7 @@ private:
 		class UCurveFloat* Curve;
 public:
 	FORCEINLINE bool IsAvaliable() { return SpringArm != nullptr && Camera != nullptr; } // SpringArm이 있고 Camera가 있으면 true
+	FORCEINLINE bool InZoom() { return bInZoom; }
 public:
 	UCAim();
 	void BeginPlay(class ACharacter* InCharacter);
@@ -38,4 +39,5 @@ private:
 	FTimeline Timeline;
 	FOnTimelineFloat TimelineFloat;
 
+	class ACHUD* Hud;
 };

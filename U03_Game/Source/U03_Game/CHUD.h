@@ -13,8 +13,13 @@ public:
 	FORCEINLINE void SetDraw() { bDraw = true; }
 	FORCEINLINE void SetNoDraw() { bDraw = false; }
 
+public:
+	ACHUD();
+
+	virtual void DrawHUD() override;
 private:
-	//class UTexture
+	UPROPERTY(EditDefaultsOnly)
+		class UTexture2D* Texture;
 private:
 	bool bDraw;
 

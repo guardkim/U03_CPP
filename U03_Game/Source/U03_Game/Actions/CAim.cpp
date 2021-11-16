@@ -1,5 +1,6 @@
 #include "CAim.h"
 #include "Global.h"
+#include "CHUD.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -20,6 +21,9 @@ void UCAim::BeginPlay(ACharacter* InCharacter)
 	TimelineFloat.BindUFunction(this, "Zooming");
 	Timeline.AddInterpFloat(Curve, TimelineFloat);
 	Timeline.SetPlayRate(200.0f);
+
+	//UGameplayStatics::GetPlayerController(GetWorld(),0)->GetHUD<ACHUD>();//그냥 GetWorld()하면 안나옴
+	Hud = OwnerCharacter->GetWorld()->GetFirstPlayerController()->GetHUD<ACHUD>();
 }
 
 void UCAim::Tick(float DeltaTime)
@@ -33,6 +37,8 @@ void UCAim::On()
 	CheckTrue(bInZoom);
 
 	bInZoom = true;
+
+	Hud->SetDraw();
 
 	SpringArm->TargetArmLength = 100.0f;
 	SpringArm->SocketOffset = FVector(0, 30, 10); //오른쪽 어깨쪽으로 카메라 옮겨줌
@@ -48,6 +54,8 @@ void UCAim::Off()
 	CheckFalse(bInZoom);
 
 	bInZoom = false;
+
+	Hud->SetNoDraw();
 
 	SpringArm->TargetArmLength = 200.0f;
 	SpringArm->SocketOffset = FVector(0, 0, 0);

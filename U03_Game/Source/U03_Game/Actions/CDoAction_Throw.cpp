@@ -4,6 +4,7 @@
 #include "Components/CStateComponent.h"
 #include "Components/CStatusComponent.h"
 #include "CAim.h"
+#include "CThrow.h"
 
 void ACDoAction_Throw::BeginPlay()
 {
@@ -15,6 +16,8 @@ void ACDoAction_Throw::BeginPlay()
 }
 void ACDoAction_Throw::DoAction()
 {
+	if (Aim->IsAvaliable())
+		CheckFalse(Aim->InZoom());
 	CheckFalse(State->IsIdleMode());
 	State->SetActionMode();
 
@@ -25,6 +28,16 @@ void ACDoAction_Throw::DoAction()
 
 void ACDoAction_Throw::Begin_DoAction()
 {
+	FVector location = OwnerCharacter->GetMesh()->GetSocketLocation("Hand_ThrowItem");//월드 공간을 얻어온다
+	FRotator rotator = OwnerCharacter->GetController()->GetControlRotation(); //전방방향
+
+	FTransform transform = Datas[0].EffectTransform;
+	transform.AddToTranslation(location);
+	transform.SetRotation(FQuat(rotator));
+
+	ACThrow* throwObject = GetWorld()->SpawnActorDeferred<ACThrow>(Datas[0].ThrowClass, transform, OwnerCharacter, nullptr,ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	UGameplayStatics::FinishSpawningActor(throwObject, transform);
 }
 
 void ACDoAction_Throw::End_DoAction()

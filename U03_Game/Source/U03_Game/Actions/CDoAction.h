@@ -11,7 +11,8 @@ class U03_GAME_API ACDoAction : public AActor
 	GENERATED_BODY()
 
 public:
-FORCEINLINE	void SetData(TArray<FDoActionData> InDatas) { Datas = InDatas; }
+	FORCEINLINE	void SetData(TArray<FDoActionData> InDatas) { Datas = InDatas; }
+	FORCEINLINE void SetEquipped(const bool* InEquipped) { bEquipped = InEquipped; } // 읽기전용
 	
 public:	
 	ACDoAction();
@@ -46,4 +47,6 @@ protected:
 
 protected:
 	TArray<FDoActionData> Datas;
+
+	const bool* bEquipped;
 };

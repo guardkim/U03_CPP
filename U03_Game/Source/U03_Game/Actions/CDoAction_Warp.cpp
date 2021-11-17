@@ -4,6 +4,7 @@
 #include "Components/DecalComponent.h"
 #include "Components/CStateComponent.h"
 #include "Components/CStatusComponent.h"
+#include "CAttachment.h"
 
 void ACDoAction_Warp::BeginPlay()
 {
@@ -13,7 +14,7 @@ void ACDoAction_Warp::BeginPlay()
 	{
 		if (actor->IsA<ACAttachment>() && actor->GetActorLabel().Contains("Warp"))
 		{
-			Decal = CHelpers::GetComponent<UDecalComponent>(OwnerCharacter);
+			Decal = CHelpers::GetComponent<UDecalComponent>(actor);
 			break;
 		}
 	}
@@ -21,6 +22,10 @@ void ACDoAction_Warp::BeginPlay()
 void ACDoAction_Warp::DoAction()
 {
 	Super::DoAction();
+
+	CheckFalse(*bEquipped);
+	FRotator rotator;
+	CheckFalse(GetCursorLocationAndRotation(Location, rotator));
 
 	CheckFalse(State->IsIdleMode());
 	State->SetActionMode();
@@ -35,11 +40,14 @@ void ACDoAction_Warp::Begin_DoAction()
 
 void ACDoAction_Warp::End_DoAction()
 {
+	OwnerCharacter->SetActorLocation(Location);
+	Location = FVector::ZeroVector;
 	State->SetIdleMode();
 	Status->SetMove();
 }
 void ACDoAction_Warp::Tick(float DeltaTime)
 {
+	CheckFalse(*bEquipped); // Equipment의 bEquipped를 DoAction 부모클래스에서 얻어와서 Warp에서 체크함
 	FVector location;
 	FRotator rotator;
 	if (GetCursorLocationAndRotation(location, rotator))

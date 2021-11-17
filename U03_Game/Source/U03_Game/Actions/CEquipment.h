@@ -16,6 +16,10 @@ class U03_GAME_API ACEquipment : public AActor
 public:
 	FORCEINLINE void SetData(FEquipmentData InData) { Data = InData; }
 	FORCEINLINE void SetColor(FLinearColor InColor) { Color = InColor; }
+	FORCEINLINE const bool* GetEquipped() { return &bEquipped; }
+	// bool* b = ACEquipment->GetEquipped();
+	// *b = false; 이러면 ACEquipment의 bEquipped가 영향을 받지만 const로 읽기전용으로 만든다
+	// 원래는 GetEquipped를 해야 값이 재적용 되지만 위의 주소참조 방식은 실시간으로 bEquipped의 변경내용이 적용된다
 	
 public:	
 	ACEquipment();
@@ -54,6 +58,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		class UCStatusComponent* Status;
 private:
+	bool bEquipped;
 	FEquipmentData Data;
 	FLinearColor Color;
 

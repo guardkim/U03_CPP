@@ -59,10 +59,12 @@ void ACEquipment::Begin_Equip_Implementation()
 void ACEquipment::End_Equip_Implementation()
 {
 	State->SetIdleMode();
+	bEquipped = true;
 }
 
 void ACEquipment::UnEquip_Implementation()
 {
+	bEquipped = false;
 	OwnerCharacter->bUseControllerRotationYaw = false;
 	OwnerCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
 	if (OnUnEquipmentDelegate.IsBound())

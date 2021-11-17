@@ -40,6 +40,10 @@ void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
 		DoAction->SetActorLabel(GetLabelName(InOwnerCharacter, "DoAction"));
 		UGameplayStatics::FinishSpawningActor(DoAction, transform);
 
+		if (!!Equipment)
+		{
+			DoAction->SetEquipped(Equipment->GetEquipped());// Equippment의 bEquipped가 적용됌
+		}
 		if (!!Attachment)
 		{
 			Attachment->OnAttachmentBeginOverlap.AddDynamic(DoAction,&ACDoAction::OnAttachmentBeginOverlap); // 자식에서 재정의

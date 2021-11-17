@@ -5,6 +5,8 @@
 #include "Actions/CEquipment.h"
 #include "Actions/CDoAction.h"
 #include "Actions/CAttachment.h"
+//#include "Actions/CDoAction_Throw.h"
+//#include "Actions/CAim.h"
 
 UCActionComponent::UCActionComponent()
 {
@@ -76,6 +78,16 @@ void UCActionComponent::ChangeType(EActionType InNewType)
 {
 	EActionType prevType = Type;
 	Type = InNewType;
+
+	/*ACDoAction_Throw* doAction = Cast<ACDoAction_Throw>(Datas[(int32)prevType]->GetDoAction());
+	if (!!doAction)
+	{
+		if (doAction->GetAim()->IsAvaliable())
+		{
+			if(doAction->GetAim()->InZoom())
+				doAction->GetAim()->Off();
+		}
+	} DoAction_Throw에서 딜리게이트에 바인딩 해줄 함수*/
 
 	if (OnActionTypeChanged.IsBound())// Execute()전에 Binding 되었는지 확인
 		OnActionTypeChanged.Broadcast(prevType, Type); // Delegate에 Binding 된 함수들을 실행

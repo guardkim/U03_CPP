@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "CThrow.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FThrowBeginOverlap, FHitResult , InHitResult);
+
 UCLASS()
 class U03_GAME_API ACThrow : public AActor
 {
@@ -26,4 +28,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+private:
+	UFUNCTION()
+		void OnComponentBeginOverlap(
+			UPrimitiveComponent* OverlappedComponent, 
+			AActor* OtherActor, 
+			UPrimitiveComponent* OtherComp, 
+			int32 OtherBodyIndex, 
+			bool bFromSweep, 
+			const FHitResult& SweepResult);
+public:
+	UPROPERTY(BlueprintAssignable)
+		FThrowBeginOverlap	OnThrowBeginOverlap;
 };

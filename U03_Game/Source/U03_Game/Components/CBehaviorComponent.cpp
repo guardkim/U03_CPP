@@ -16,14 +16,7 @@ void UCBehaviorComponent::BeginPlay()
 	
 }
 
-void UCBehaviorComponent::ChangeType(EBehaviorType InPrev)
-{
-}
 
-EBehaviorType UCBehaviorComponent::GetType()
-{
-	return EBehaviorType();
-}
 
 bool UCBehaviorComponent::IsWaitMode()
 {

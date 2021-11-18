@@ -5,9 +5,13 @@
 #include "CAttachment.h"
 #include "CDoAction.h"
 
-void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
+void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter, class UCAction** OutAction)
 {
 	FTransform transform;
+
+	ACAttachment* Attachment = nullptr; //지역변수에 저장
+	ACEquipment* Equipment = nullptr;
+
 	if (!!AttachmentClass)
 	{
 		//L밸류 R밸류 검색...
@@ -32,6 +36,7 @@ void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
 		}
 	}
 
+	ACDoAction* DoAction = nullptr; // 지역변수 저장
 	if (!!DoActionClass)
 	{
 		DoAction = InOwnerCharacter->GetWorld()->SpawnActorDeferred<ACDoAction>(DoActionClass, transform, InOwnerCharacter);
@@ -50,6 +55,12 @@ void UCActionData::BeginPlay(class ACharacter* InOwnerCharacter)
 			Attachment->OnAttachmentEndOverlap.AddDynamic(DoAction,&ACDoAction::OnAttachmentEndOverlap);
 		}
 	}
+	*OutAction = NewObject<UCAction>(); // 주소할당 받음 Hip영역
+	(*OutAction)->Attachment = Attachment;
+	(*OutAction)->Equipment = Equipment;
+	(*OutAction)->DoAction = DoAction;
+	(*OutAction)->EquipmentColor = EquipmentColor; // CAction.h의 멤버변수에 저장됨
+
 }
 
 FString UCActionData::GetLabelName(ACharacter* InOwnerCharacter, FString InName)

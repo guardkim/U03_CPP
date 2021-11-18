@@ -19,11 +19,12 @@ class U03_GAME_API UCActionComponent : public UActorComponent
 
 private:
 	UPROPERTY(EditDefaultsOnly)
-		class UCActionData* Datas[(int32)EActionType::Max];
+		class UCActionData* DatasAssets[(int32)EActionType::Max];
+	// 사용자가 값을 넣어줌
 
 public:
 	UFUNCTION(BlueprintPure)
-		FORCEINLINE class UCActionData* GetCurrent() { return Datas[(int32)Type]; }
+		FORCEINLINE class UCAction* GetCurrent() { return Datas[(int32)Type]; }
 	
 	UFUNCTION(BlueprintPure)
 		FORCEINLINE bool isUnarmedMode() { return Type == EActionType::Unarmed; }
@@ -45,13 +46,14 @@ public:
 public:
 	UCActionComponent();
 
-	void SetUnarmedMode();
-	void SetFistMode();
-	void SetOneHandMode();
-	void SetTwoHandMode();
-	void SetWarpMode();
-	void SetTornadoMode();
-	void SetMagicBallMode();
+	
+	UFUNCTION(BlueprintCallable) void SetUnarmedMode();
+	UFUNCTION(BlueprintCallable) void SetFistMode();
+	UFUNCTION(BlueprintCallable) void SetOneHandMode();
+	UFUNCTION(BlueprintCallable) void SetTwoHandMode();
+	UFUNCTION(BlueprintCallable) void SetWarpMode();
+	UFUNCTION(BlueprintCallable) void SetTornadoMode();
+	UFUNCTION(BlueprintCallable) void SetMagicBallMode();
 
 	void OffAllCollision();
 
@@ -72,4 +74,7 @@ public:
 		FActionTypeChanged OnActionTypeChanged;
 private:
 	EActionType Type;
+	UPROPERTY()
+		class UCAction* Datas[(int32)EActionType::Max];
+	//CAction에 저장받기 위함 SpawnDeffed된 결과를 저장, 가비지컬렉터 주의(UPROPERTY)
 };

@@ -1,6 +1,7 @@
 #include "CActionComponent.h"
 #include "Global.h"
 #include "GameFramework/Character.h"
+#include "Actions/CAction.h"
 #include "Actions/CActionData.h"
 #include "Actions/CEquipment.h"
 #include "Actions/CDoAction.h"
@@ -21,8 +22,8 @@ void UCActionComponent::BeginPlay()
 	ACharacter* character = Cast<ACharacter>(GetOwner());
 	for (int32 i = 0; i < (int32)EActionType::Max; i++)
 	{
-		if (!!Datas[i])
-			Datas[i]->BeginPlay(character);
+		if (!!DatasAssets[i])
+			DatasAssets[i]->BeginPlay(character, &Datas[i]);//SpawnDefferd된 결과가 UCAtion Datas에 저장됨
 	}
 }
 
@@ -70,7 +71,7 @@ void UCActionComponent::SetMode(EActionType InType)
 		if (!!Datas[(int32)Type])
 			Datas[(int32)Type]->GetEquipment()->UnEquip();
 	}
-	if (!!Datas[(int32)InType]) // 변경하고자 하는 무기
+	if (!!Datas[(int32)InType] && !!Datas[(int32)InType]->GetEquipment()) // 변경하고자 하는 무기
 		Datas[(int32)InType]->GetEquipment()->Equip();
 	ChangeType(InType);
 }
@@ -127,7 +128,7 @@ void UCActionComponent::DoOffAim()
 }
 void UCActionComponent::OffAllCollision()
 {
-	for (UCActionData* data : Datas)
+	for (UCAction* data : Datas)
 	{
 		if (!!data == false) // data == nullptr
 			continue;

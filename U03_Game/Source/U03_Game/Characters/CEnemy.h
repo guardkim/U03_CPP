@@ -20,8 +20,8 @@ private:
 		class UWidgetComponent* NameWidget;
 	UPROPERTY(VisibleDefaultsOnly)
 		class UWidgetComponent* HealthWidget;
-private: //Action, Montage, State, Status
-	UPROPERTY(VisibleDefaultsOnly)
+protected: //Action, Montage, State, Status // 블프에서 사용하려면 protected
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly) //블프에서 사용하려면 ReadOnly or ReadWrite
 		class UCActionComponent* Action;
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCMontagesComponent* Montages;

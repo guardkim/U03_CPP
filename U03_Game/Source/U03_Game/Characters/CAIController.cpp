@@ -6,6 +6,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Components/CBehaviorComponent.h"
+#include "Characters/CPlayer.h"
 
 ACAIController::ACAIController()
 {
@@ -40,7 +41,7 @@ void ACAIController::OnPossess(APawn* InPawn)
 	//OwnerEnemy의 Blackboard를 얻어와서(AI_Melee의 꽂아준 BehaviorTree의 Blackboard를 꽂아줌) 변수에 저장
 
 	SetGenericTeamId(OwnerEnemy->GetTeamID());
-	Perception->OnPerceptionUpdated.AddDynamic(this, &ACAIController::OnPerceptionUpdated);//const TArray<AActor*>&
+	Perception->OnPerceptionUpdated.AddDynamic(this, &ACAIController::OnPerceptionUpdated);
 
 	RunBehaviorTree(OwnerEnemy->GetBehaviorTree());
 	
@@ -51,4 +52,28 @@ void ACAIController::OnPossess(APawn* InPawn)
 void ACAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
+	
+	Perception->OnPerceptionUpdated.Clear(); //바인딩 된 함수 다 날리기
+}
+
+float ACAIController::GetSightRadius()
+{
+	return Sight->SightRadius;
+}
+
+void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
+{
+	TArray<AActor*> actors;
+	Perception->GetCurrentlyPerceivedActors(nullptr, actors);
+
+	ACPlayer* player = nullptr;
+	for (AActor* actor : actors)
+	{
+		player = Cast<ACPlayer>(actor);
+
+		if (!!player)
+			break;
+	}
+
+	Blackboard->SetValueAsObject("Player", player); //Player키에다가 감지된 player를 넣어줌
 }

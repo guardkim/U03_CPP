@@ -4,13 +4,16 @@
 #include "GameFramework/Character.h"
 #include "Components/CStateComponent.h"
 #include "ICharacter.h"
+#include "GenericTeamAgentInterface.h"
 #include "CPlayer.generated.h"
-
 UCLASS()
-class U03_GAME_API ACPlayer : public ACharacter, public IICharacter
+class U03_GAME_API ACPlayer : public ACharacter, public IICharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "TeamID")
+		uint8 TeamID = 0; //플레이어, 적은1번
 private:
 	//SceneComponent
 	UPROPERTY(VisibleDefaultsOnly)
@@ -40,6 +43,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual FGenericTeamId GetGenericTeamId() const;
 
 private:
 	void OnMoveForward(float InAxis);

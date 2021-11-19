@@ -8,7 +8,12 @@ UCLASS()
 class U03_GAME_API ACAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
+private:
+	UPROPERTY(VisibleDefaultsOnly)
+		class UCBehaviorComponent* Behavior;
+	UPROPERTY(VisibleDefaultsOnly)
+		class UAIPerceptionComponent* Perception;
 public:
 	ACAIController();
 
@@ -19,4 +24,6 @@ protected:
 
 private:
 	class ACEnemy_AI* OwnerEnemy;
+	
+	class UAISenseConfig_Sight* Sight;
 };

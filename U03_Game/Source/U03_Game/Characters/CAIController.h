@@ -11,12 +11,15 @@ class U03_GAME_API ACAIController : public AAIController
 
 private:
 	UPROPERTY(EditAnywhere)
-		float BehaviorRange = 150.0f;
+		float BehaviorRange = 150.0f; //Melee는 공격범위 MagicBall은 도망갈 거리
 private:
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCBehaviorComponent* Behavior;
 	UPROPERTY(VisibleDefaultsOnly)
 		class UAIPerceptionComponent* Perception;
+
+public:
+	FORCEINLINE float GetBehaviorRange() { return BehaviorRange; }
 public:
 	ACAIController();
 

@@ -18,16 +18,19 @@ private:
 		int32 index;
 	//정방향 역방향
 	UPROPERTY(EditAnywhere)
-		bool bReserve; 
+		bool bReverse; 
 	//Spline Point의 주변의 반경
 	UPROPERTY(EditAnywhere)
 		float AcceptanceRadius = 50.0f;
 
 public:
 	// Path가 있을때만
- 	FORCEINLINE bool ISValid() { return Path != nullptr; }
+ 	FORCEINLINE bool IsValid() { return Path != nullptr; }
 public:	
 	UCPatrolComponent();
+
+	bool GetMoveTo(FVector& OutLocation, float& OutAcceptanceRadius);
+	void UpdateNextIndex();
 
 protected:
 	virtual void BeginPlay() override;

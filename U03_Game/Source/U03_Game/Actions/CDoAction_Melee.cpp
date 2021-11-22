@@ -59,6 +59,8 @@ void ACDoAction_Melee::OnAttachmentBeginOverlap(ACharacter* InAttacker, AActor* 
 	//충돌되면 실행 될 곳
 	Super::OnAttachmentBeginOverlap(InAttacker, InAttackCauser, InOtherCharacter);
 
+	CheckNull(InOtherCharacter);
+
 
 
 	//중복타격 방지, 한번 피격된 캐릭터는 충돌 처리에서 제외

@@ -1,6 +1,7 @@
 #include "CEnemy.h"
 #include "Global.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/CActionComponent.h"
 #include "Components/CMontagesComponent.h"
@@ -91,6 +92,8 @@ float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 	float damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser); // 받은 데미지가 리턴됨
 	DamageInstigator = EventInstigator;
 
+	Action->AbortByDamaged();
+
 	Status->SubHealth(damage);
 
 	if (Status->GetHealth() <= 0.0f)
@@ -107,6 +110,7 @@ float ACEnemy::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContro
 void ACEnemy::Hitted()
 {
 	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
+	Status->SetMove();
 	Montages->PlayHitted();
 
 	FVector start = GetActorLocation();
@@ -125,9 +129,20 @@ void ACEnemy::Hitted()
 
 void ACEnemy::Dead()
 {
-	CheckFalse(State->IsDeadMode());
 	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
+	CheckFalse(State->IsDeadMode());
+	NameWidget->SetVisibility(false);
+	HealthWidget->SetVisibility(false);
+	Action->Dead();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Montages->PlayDead();
+}
+
+void ACEnemy::End_Dead()
+{
+	Action->End_Dead();
+
+	Destroy(); // 렌더링만 꺼주고, 후에 가비지컬렉터에서 Memory Release가 된다
 }
 
 

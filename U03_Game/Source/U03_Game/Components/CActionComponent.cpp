@@ -126,6 +126,41 @@ void UCActionComponent::DoOffAim()
 			action->OffAim();
 	}
 }
+void UCActionComponent::Dead()
+{
+	OffAllCollision(); //무기 충돌체 끄기
+}
+void UCActionComponent::End_Dead()
+{
+	for (int32 i = 0 ; i < (int32)EActionType::Max ; i++)
+	{
+		if (!!Datas[i] && !!Datas[i]->GetAttachment())
+			Datas[i]->GetAttachment()->Destroy();
+
+		if (!!Datas[i] && !!Datas[i]->GetEquipment())
+			Datas[i]->GetEquipment()->Destroy();
+
+		if (!!Datas[i] && !!Datas[i]->GetDoAction())
+			Datas[i]->GetDoAction()->Destroy();
+	}
+}
+void UCActionComponent::AbortByDamaged()
+{
+	CheckNull(Datas[(int32)Type]);
+	CheckTrue(isUnarmedMode());
+
+	if (!!Datas[(int32)Type]->GetEquipment())
+	{
+		//칼을 꺼내다 맞으면 칼을 강제로 붙여주고, Idle로 바꿔줌
+		Datas[(int32)Type]->GetEquipment()->Begin_Equip();
+		Datas[(int32)Type]->GetEquipment()->End_Equip();
+	}
+	if (!!Datas[(int32)Type]->GetDoAction())
+	{
+		//그 외 추가로 필요한 내용이 있으면 Abort에 작성
+		Datas[(int32)Type]->GetDoAction()->Abort();
+	}
+}
 void UCActionComponent::OffAllCollision()
 {
 	for (UCAction* data : Datas)

@@ -45,6 +45,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual FGenericTeamId GetGenericTeamId() const;
 
+
 private:
 	void OnMoveForward(float InAxis);
 	void OnMoveRight(float InAxis);

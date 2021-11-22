@@ -21,6 +21,7 @@ public:
 	virtual void DoAction() {}
 	virtual void Begin_DoAction() {}
 	virtual void End_DoAction() {}
+	virtual void Abort() {} //자식에서 재정의 해서 쓰면됨
 
 	virtual void OnAim() {}
 	virtual void OffAim() {}

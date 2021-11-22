@@ -14,11 +14,14 @@ UCBTService_Melee::UCBTService_Melee()
 void UCBTService_Melee::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory,DeltaSeconds);
+
 	ACAIController* controller = Cast<ACAIController>(OwnerComp.GetOwner());
 	UCBehaviorComponent* behavior = CHelpers::GetComponent<UCBehaviorComponent>(controller);
 	ACEnemy_AI* aiPawn = Cast<ACEnemy_AI>(controller->GetPawn());
 	UCStateComponent* state = CHelpers::GetComponent<UCStateComponent>(aiPawn);
 	UCPatrolComponent* patrol = CHelpers::GetComponent<UCPatrolComponent>(aiPawn);
+
+	CheckTrue(state->IsDeadMode());
 
 
 	if (state->IsHittedMode())//적이 맞고있다면

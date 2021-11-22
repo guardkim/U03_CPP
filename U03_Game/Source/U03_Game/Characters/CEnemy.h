@@ -44,6 +44,7 @@ protected:
 
 public:
 	virtual void ChangeColor(FLinearColor InColor) override;
+	
 
 	UFUNCTION()
 		void ResetColor();
@@ -54,6 +55,7 @@ private:
 private:
 	void Hitted();
 	void Dead();
+	void End_Dead() override;
 private:
 	class UMaterialInstanceDynamic* BodyMaterial;
 	class UMaterialInstanceDynamic* LogoMaterial;

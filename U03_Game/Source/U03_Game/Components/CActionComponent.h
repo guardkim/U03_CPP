@@ -62,6 +62,10 @@ public:
 
 	void DoOnAim();
 	void DoOffAim();
+
+	void Dead(); //무기의 충돌체 다 꺼버린다
+	void End_Dead();
+	void AbortByDamaged();
 private:
 	void SetMode(EActionType InType);
 	void ChangeType(EActionType InNewType);

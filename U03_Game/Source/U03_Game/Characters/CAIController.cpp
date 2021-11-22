@@ -10,6 +10,7 @@
 
 ACAIController::ACAIController()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	CHelpers::CreateActorComponent(this, &Blackboard, "Blackboard");//부모의 UBlackboardComponent
 	CHelpers::CreateActorComponent(this, &Behavior, "Behavior");
 	CHelpers::CreateActorComponent(this, &Perception, "Perception");
@@ -31,6 +32,18 @@ ACAIController::ACAIController()
 void ACAIController::BeginPlay()
 {
 	Super::BeginPlay();
+}
+void ACAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	CheckFalse(bDrawDebug);
+
+	FVector center = OwnerEnemy->GetActorLocation();
+	center.Z -= AdjustCircleHeight;
+	DrawDebugCircle(GetWorld(), center, Sight->SightRadius, 300, FColor::Green, false, -1.0f, 0, 0, FVector::RightVector,FVector::ForwardVector);
+	DrawDebugCircle(GetWorld(), center, BehaviorRange, 300, FColor::Red, false, -1.0f, 0, 0, FVector::RightVector,FVector::ForwardVector);
+	//Segment == 정밀도, YAxis, ZAxis를 설정해주지않으면 바닥에 눕는게아니라 90도 서서 나온다..
 }
 
 void ACAIController::OnPossess(APawn* InPawn)
@@ -77,3 +90,4 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 
 	Blackboard->SetValueAsObject("Player", player); //Player키에다가 감지된 player를 넣어줌
 }
+

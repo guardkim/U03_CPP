@@ -11,8 +11,12 @@ class U03_GAME_API ACEnemy : public ACharacter, public IICharacter
 {
 	GENERATED_BODY()
 
+		
+
 
 private:
+	UPROPERTY(EditAnywhere, Category = "DebugSettings")
+		bool bDrawName = true;//À§Á¬À» ±×¸®°Å³ª ²ô°Å³ª
 	UPROPERTY(EditDefaultsOnly)
 		float LaunchValue = 100.0f;
 private:

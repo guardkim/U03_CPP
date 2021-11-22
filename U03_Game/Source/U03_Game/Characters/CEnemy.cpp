@@ -79,6 +79,8 @@ void ACEnemy::BeginPlay()
 	Cast<UCUserWidget_Health>(HealthWidget->GetUserWidgetObject())->Update(Status->GetHealth(), Status->GetMaxHealth());
 
 	//Action->SetUnarmedMode(); 블프에서 설정할 것
+	
+	NameWidget->SetVisibility(bDrawName);
 
 }
 

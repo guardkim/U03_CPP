@@ -19,6 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	class ACPlayer* UseCursorLocation();
 	bool GetCursorLocationAndRotation(FVector& OutLocation, FRotator& OutRotator); // 지면하고 마우스위치가 충돌하면 해당하는 지점의 위치정보를 리턴
 private:
 	class UDecalComponent* Decal;

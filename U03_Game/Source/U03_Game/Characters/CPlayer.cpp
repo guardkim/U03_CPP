@@ -11,6 +11,8 @@
 #include "Components/CActionComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Widgets/CUserWidget_Select.h"
+#include "Widgets/CUserWidget_SelectItem.h"
 
 ACPlayer::ACPlayer()
 {
@@ -51,6 +53,10 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = Status->GetSprintSpeed();
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0); //Yaw회전이 빨라짐
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	
+
+	//Widget
+	CHelpers::GetClass<UCUserWidget_Select>(&SelectWidgetClass, "WidgetBlueprint'/Game/Widgets/WB_Select.WB_Select_C'");
 
 }
 
@@ -74,7 +80,16 @@ void ACPlayer::BeginPlay()
 
 	Action->SetUnarmedMode();
 
-
+	SelectWidget = CreateWidget<UCUserWidget_Select, APlayerController>(GetController<APlayerController>(), SelectWidgetClass, "Widget");
+	SelectWidget->AddToViewport();
+	SelectWidget->SetVisibility(ESlateVisibility::Hidden);
+	//GetController<APlayerController>()->bShowMouseCursor = true; 커서 나오게하는 변수
+	SelectWidget->GetItem("Item1")->OnUserWidget_Select_Clicked.AddDynamic(this, &ACPlayer::OnFist);
+	SelectWidget->GetItem("Item2")->OnUserWidget_Select_Clicked.AddDynamic(this, &ACPlayer::OnOneHand);
+	SelectWidget->GetItem("Item3")->OnUserWidget_Select_Clicked.AddDynamic(this, &ACPlayer::OnTwoHand);
+	SelectWidget->GetItem("Item4")->OnUserWidget_Select_Clicked.AddDynamic(this, &ACPlayer::OnMagicBall);
+	SelectWidget->GetItem("Item5")->OnUserWidget_Select_Clicked.AddDynamic(this, &ACPlayer::OnWarp);
+	SelectWidget->GetItem("Item6")->OnUserWidget_Select_Clicked.AddDynamic(this, &ACPlayer::OnTornado);
 }
 
 void ACPlayer::Tick(float DeltaTime)
@@ -92,6 +107,7 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("HorizontalLook", this, &ACPlayer::OnHorizontalLook);
 	PlayerInputComponent->BindAxis("VerticalLook", this, &ACPlayer::OnVerticalLook);
 	PlayerInputComponent->BindAxis("Zoom", this, &ACPlayer::OnZoom);
+
 	PlayerInputComponent->BindAction("Evade",EInputEvent::IE_Pressed, this, &ACPlayer::OnEvade);
 	PlayerInputComponent->BindAction("Walk", EInputEvent::IE_Pressed, this, &ACPlayer::OnWalk);
 	PlayerInputComponent->BindAction("Walk", EInputEvent::IE_Released, this, &ACPlayer::OffWalk);
@@ -101,10 +117,12 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Action", EInputEvent::IE_Pressed, this, &ACPlayer::OnDoAction);
 	PlayerInputComponent->BindAction("MagicBall", EInputEvent::IE_Pressed, this, &ACPlayer::OnMagicBall);
 	PlayerInputComponent->BindAction("Warp", EInputEvent::IE_Pressed, this, &ACPlayer::OnWarp);
-
-
 	PlayerInputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ACPlayer::OnAim);
 	PlayerInputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ACPlayer::OffAim);
+	PlayerInputComponent->BindAction("Tornado", EInputEvent::IE_Pressed, this, &ACPlayer::OnTornado);
+	PlayerInputComponent->BindAction("Tornado", EInputEvent::IE_Released, this, &ACPlayer::OffTornado);
+	PlayerInputComponent->BindAction("SelectAction", EInputEvent::IE_Pressed, this, &ACPlayer::OnSelectAction);
+	PlayerInputComponent->BindAction("SelectAction", EInputEvent::IE_Released, this, &ACPlayer::OffSelectAction);
 }
 
 FGenericTeamId ACPlayer::GetGenericTeamId() const
@@ -237,6 +255,13 @@ void ACPlayer::OnWarp()
 	CheckFalse(State->IsIdleMode());
 	Action->SetWarpMode();
 }
+void ACPlayer::OnTornado()
+{
+	CLog::Print("Tornado~~~");
+}
+void ACPlayer::OffTornado()
+{
+}
 void ACPlayer::OnAim()
 {
 	Action->DoOnAim();
@@ -244,6 +269,23 @@ void ACPlayer::OnAim()
 void ACPlayer::OffAim()
 {
 	Action->DoOffAim();
+}
+void ACPlayer::OnSelectAction()
+{
+	CheckFalse(State->IsIdleMode());
+	SelectWidget->SetVisibility(ESlateVisibility::Visible);
+	GetController<APlayerController>()->bShowMouseCursor = true;
+	GetController<APlayerController>()->SetInputMode(FInputModeGameAndUI());
+
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.1f);
+}
+void ACPlayer::OffSelectAction()
+{
+	SelectWidget->SetVisibility(ESlateVisibility::Hidden);
+	GetController<APlayerController>()->bShowMouseCursor = false;
+	GetController<APlayerController>()->SetInputMode(FInputModeGameOnly());
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+
 }
 float ACPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {

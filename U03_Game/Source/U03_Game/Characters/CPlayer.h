@@ -37,6 +37,9 @@ private:
 		class UCMontagesComponent* Montages;
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCActionComponent* Action;
+
+public:
+	FORCEINLINE class UCUserWidget_Select* GetSelectWidget() { return SelectWidget; }
 public:
 	ACPlayer();
 
@@ -73,15 +76,20 @@ public:
 	void End_Roll();
 
 private:
-	void OnFist();
-	void OnOneHand();
-	void OnTwoHand();
-	void OnMagicBall();
-	void OnWarp();
+	UFUNCTION() void OnFist();
+	UFUNCTION() void OnOneHand();
+	UFUNCTION() void OnTwoHand();
+	UFUNCTION() void OnMagicBall();
+	UFUNCTION() void OnWarp();
+	UFUNCTION() void OnTornado();
+	UFUNCTION() void OffTornado();
 
 	void OnDoAction();
 	void OnAim();
 	void OffAim();
+
+	void OnSelectAction();//Ctrl ´­·¶À»¶§
+	void OffSelectAction();
 
 	void Hitted();
 	void Dead();
@@ -98,5 +106,9 @@ private:
 
 private:
 	class AController* DamageInstigator;
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+		class UCUserWidget_Select* SelectWidget;
 
 };

@@ -82,7 +82,6 @@ private:
 	UFUNCTION() void OnMagicBall();
 	UFUNCTION() void OnWarp();
 	UFUNCTION() void OnTornado();
-	UFUNCTION() void OffTornado();
 
 	void OnDoAction();
 	void OnAim();

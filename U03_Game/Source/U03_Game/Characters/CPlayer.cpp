@@ -120,7 +120,6 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Aim", EInputEvent::IE_Pressed, this, &ACPlayer::OnAim);
 	PlayerInputComponent->BindAction("Aim", EInputEvent::IE_Released, this, &ACPlayer::OffAim);
 	PlayerInputComponent->BindAction("Tornado", EInputEvent::IE_Pressed, this, &ACPlayer::OnTornado);
-	PlayerInputComponent->BindAction("Tornado", EInputEvent::IE_Released, this, &ACPlayer::OffTornado);
 	PlayerInputComponent->BindAction("SelectAction", EInputEvent::IE_Pressed, this, &ACPlayer::OnSelectAction);
 	PlayerInputComponent->BindAction("SelectAction", EInputEvent::IE_Released, this, &ACPlayer::OffSelectAction);
 }
@@ -257,11 +256,10 @@ void ACPlayer::OnWarp()
 }
 void ACPlayer::OnTornado()
 {
-	CLog::Print("Tornado~~~");
+	CheckFalse(State->IsIdleMode());
+	Action->SetTornadoMode();
 }
-void ACPlayer::OffTornado()
-{
-}
+
 void ACPlayer::OnAim()
 {
 	Action->DoOnAim();

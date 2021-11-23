@@ -74,7 +74,17 @@ void ACDoAction_Tornado::Tick(float DeltaTime)
 	FVector location = OwnerCharacter->GetActorLocation();
 	
 	Angle += Speed * DeltaTime;
-	UKismetMathLibrary::Clamp(Angle, 0, 360);
+
+	if (FMath::IsNearlyEqual(Angle, 360.0f)) //360도에 가까워지면
+		Angle = 0.0f;
+	
+	FVector rotVector = FVector(Distance, 0, 0); // 거리만큼 플레이어한테서 벌려주고
+	FVector yawVector = rotVector.RotateAngleAxis(Angle, FVector::UpVector); // Angle값과 돌아갈 축(Yaw)
+	
+	location += yawVector;
+
+	Box->SetWorldLocation(location);
+
 }
 
 void ACDoAction_Tornado::Hitted()

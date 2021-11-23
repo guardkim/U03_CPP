@@ -3,6 +3,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/CStatusComponent.h"
 #include "Components/COptionComponent.h"
 #include "Components/CStateComponent.h"
@@ -52,6 +53,8 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 }
+
+
 
 void ACPlayer::BeginPlay()
 {
@@ -242,13 +245,55 @@ void ACPlayer::OffAim()
 {
 	Action->DoOffAim();
 }
+float ACPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser); // πﬁ¿∫ µ•πÃ¡ˆ∞° ∏Æ≈œµ 
+	DamageInstigator = EventInstigator;
+
+	Action->AbortByDamaged();
+
+	Status->SubHealth(damage);
+
+	if (Status->GetHealth() <= 0.0f)
+	{
+		State->SetDeadMode();
+		return 0.0f;
+	}
+
+	State->SetHittedMode();
+
+	return Status->GetHealth();
+}
+void ACPlayer::Hitted()
+{
+	Montages->PlayHitted();
+	Status->SetMove();
+
+
+}
+
+void ACPlayer::Dead()
+{
+	Action->Dead(); //∞¢¡æ √Êµπ√º ≤®¡‹
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision); // ƒ∏Ω∂ ƒ›∏Æ¿¸ ≤Ù±‚
+	Montages->PlayDead();
+}
+
+void ACPlayer::End_Dead()
+{
+	Action->End_Dead(); //º“¿Ø«— ∞ÕµÈ «ÿ¡¶
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetController<APlayerController>(), EQuitPreference::Quit, false);
+}
 
 void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
 	{
-		case EStateType::Roll: Begin_Roll();			break;
-		case EStateType::Backstep: Begin_Backstep();	break;
+		case EStateType::Roll:		Begin_Roll();		break;
+		case EStateType::Backstep:	Begin_Backstep();	break;
+		case EStateType::Hitted:	Hitted();			break;
+		case EStateType::Dead:		Dead();				break;
+
 	}
 }
 void ACPlayer::OnDoAction()

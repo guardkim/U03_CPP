@@ -14,6 +14,10 @@ class U03_GAME_API ACPlayer : public ACharacter, public IICharacter, public IGen
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamID")
 		uint8 TeamID = 0; //플레이어, 적은1번
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+		TSubclassOf<class UCUserWidget_Select> SelectWidgetClass;
 private:
 	//SceneComponent
 	UPROPERTY(VisibleDefaultsOnly)
@@ -35,6 +39,8 @@ private:
 		class UCActionComponent* Action;
 public:
 	ACPlayer();
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -76,6 +82,10 @@ private:
 	void OnDoAction();
 	void OnAim();
 	void OffAim();
+
+	void Hitted();
+	void Dead();
+	void End_Dead();
 public:
 	virtual void ChangeColor(FLinearColor InColor) override;
 private:
@@ -85,4 +95,8 @@ private:
 private:
 	class UMaterialInstanceDynamic* BodyMaterial;
 	class UMaterialInstanceDynamic* LogoMaterial;
+
+private:
+	class AController* DamageInstigator;
+
 };

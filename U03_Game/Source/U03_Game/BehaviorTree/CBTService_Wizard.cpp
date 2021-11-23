@@ -34,7 +34,18 @@ void UCBTService_Wizard::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 		controller->ClearFocus(EAIFocusPriority::Gameplay); //적이 계속 쳐다보지 않게 한번 날려줌
 		return;
 	}
+	else
+	{
+		//플레이어가 죽으면 가만히 있음
+		UCStateComponent* targetstate = CHelpers::GetComponent<UCStateComponent>(target);
+		if (targetstate->IsDeadMode())
+		{
+			behavior->SetWaitMode();
+			return;
+		}
+	}
 	controller->SetFocus(target); //감지가 되면 플레이어를 쳐다봄
+	
 
 	float distance = aiPawn->GetDistanceTo(target); // 플레이어와 적 사이의 거리
 

@@ -40,6 +40,16 @@ void UCBTService_Melee::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		behavior->SetWaitMode();
 		return;
 	}
+	else
+	{
+		//플레이어가 죽으면 가만히 있음
+		UCStateComponent* targetstate = CHelpers::GetComponent<UCStateComponent>(target);
+		if (targetstate->IsDeadMode())
+		{
+			behavior->SetWaitMode();
+			return;
+		}
+	}
 
 	float distance = aiPawn->GetDistanceTo(target); // 적과 나의 거리
 

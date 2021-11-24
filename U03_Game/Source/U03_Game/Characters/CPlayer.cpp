@@ -9,6 +9,7 @@
 #include "Components/CStateComponent.h"
 #include "Components/CMontagesComponent.h"
 #include "Components/CActionComponent.h"
+#include "Components/CFeetComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Widgets/CUserWidget_Select.h"
@@ -28,6 +29,7 @@ ACPlayer::ACPlayer()
 	CHelpers::CreateActorComponent(this, &Status, "Status");
 	CHelpers::CreateActorComponent(this, &Option, "Option");
 	CHelpers::CreateActorComponent(this, &State, "State");
+	CHelpers::CreateActorComponent(this, &Feet, "Feet");
 
 	//Component Settings
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -88));

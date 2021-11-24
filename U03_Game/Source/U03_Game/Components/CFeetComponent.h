@@ -17,7 +17,6 @@ public:
 		FVector RightDistance;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		FVector PevisDistance;
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		FRotator LeftRotation;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
@@ -57,7 +56,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	void Trace(FName InSocket, float& OutDistance);
+	void Trace(FName InSocket, float& OutDistance, FRotator& OutRotation);
 private:
 	FFeetData Data;
 

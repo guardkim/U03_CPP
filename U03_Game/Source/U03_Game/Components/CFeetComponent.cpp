@@ -23,21 +23,27 @@ void UCFeetComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	float leftDistance;
-	Trace(LeftSocket,leftDistance);
+	FRotator leftRotation;
+	Trace(LeftSocket,leftDistance, leftRotation);
 
 	float rightDistance;
-	Trace(RightSocket, rightDistance);
+	FRotator rightRotation;
+	Trace(RightSocket, rightDistance, rightRotation);
 
 	float offset = FMath::Min(leftDistance, rightDistance);
 
 	//Data.LeftDistance.X = leftDistance - offset; 발이 자석처럼 착착 붙는다(선형보간(lerp)을 통해 넣어줄 예정)
 	//UKismetMathLibrary::RInterpTo(); //회전용 lerp
 	Data.LeftDistance.X = UKismetMathLibrary::FInterpTo(Data.LeftDistance.X,(leftDistance - offset),DeltaTime, InterpSpeed); //vector와 vector끼리의 lerp전용
-	Data.RightDistance.X = UKismetMathLibrary::FInterpTo(Data.RightDistance.X,-(leftDistance - offset),DeltaTime, InterpSpeed); //vector와 vector끼리의 lerp전용
+	Data.RightDistance.X = UKismetMathLibrary::FInterpTo(Data.RightDistance.X,-(rightDistance - offset),DeltaTime, InterpSpeed); //vector와 vector끼리의 lerp전용
+	Data.PevisDistance.Z = UKismetMathLibrary::FInterpTo(Data.PevisDistance.Z, offset, DeltaTime, InterpSpeed); // Pelvis는 그냥 내려주면됨
+	Data.LeftRotation = UKismetMathLibrary::RInterpTo(Data.LeftRotation, leftRotation, DeltaTime, InterpSpeed);
+	Data.RightRotation = UKismetMathLibrary::RInterpTo(Data.RightRotation, rightRotation, DeltaTime, InterpSpeed);
 	//AnimInstance로 넘김
+	
 }
 
-void UCFeetComponent::Trace(FName InSocket, float& OutDistance)
+void UCFeetComponent::Trace(FName InSocket, float& OutDistance, FRotator& OutRotation)
 {
 	OutDistance = 0.0f;
 
@@ -68,9 +74,18 @@ void UCFeetComponent::Trace(FName InSocket, float& OutDistance)
 
 	CheckFalse(hitResult.IsValidBlockingHit()); //라인에 닿은게 아무것도없다면
 
+
 	float length = (hitResult.ImpactPoint - hitResult.TraceEnd).Size(); //벡터의 길이 , 발밑부터 아래로 선이 그려진 충돌지점까지의 벡터의 길이
 	OutDistance = OffsetDistance + length - TraceDistance; // OffsetDistance는 보정용 값, 실제로 파고든길이 - 검출용 가상용 길이 = 실제로 발을 끌어내려야 할 높이
 
+	//hitResult.ImpactNormal.Rotation();//Roll회전이 없다
+
+	FVector normal = hitResult.ImpactNormal;
+
+	float roll = UKismetMathLibrary::DegAtan2(normal.Y, normal.Z );//충돌방향은아는데 각도를 모를때
+	float pitch = UKismetMathLibrary::DegAtan2(normal.X, normal.Z);
+
+	OutRotation = FRotator(pitch, 0.0f, roll);
 
 }
 

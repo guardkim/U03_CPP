@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "Gameframework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/TriggerVolume.h"
 
 UCFeetComponent::UCFeetComponent()
 {
@@ -16,6 +17,14 @@ void UCFeetComponent::BeginPlay()
 
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
 	CapsuleHalfHeight = OwnerCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	TArray<AActor*> actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATriggerVolume::StaticClass(), actors);
+	for (AActor* actor : actors)
+	{
+		actor->OnActorBeginOverlap.AddDynamic(this, &UCFeetComponent::OnActorBeginOverlap);
+		actor->OnActorEndOverlap.AddDynamic(this, &UCFeetComponent::OnActorEndOverlap);
+	}
+		//typeid(a) C스타일 클래스레퍼런스
 }
 
 
@@ -83,9 +92,22 @@ void UCFeetComponent::Trace(FName InSocket, float& OutDistance, FRotator& OutRot
 	FVector normal = hitResult.ImpactNormal;
 
 	float roll = UKismetMathLibrary::DegAtan2(normal.Y, normal.Z );//충돌방향은아는데 각도를 모를때
-	float pitch = UKismetMathLibrary::DegAtan2(normal.X, normal.Z);
+	float pitch = -UKismetMathLibrary::DegAtan2(normal.X, normal.Z);
 
 	OutRotation = FRotator(pitch, 0.0f, roll);
 
+}
+
+void UCFeetComponent::OnActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	CheckNull(Cast<ACharacter>(OtherActor));
+
+	bIkMode = true;
+}
+
+void UCFeetComponent::OnActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	CheckNull(Cast<ACharacter>(OtherActor));
+	bIkMode = false;
 }
 

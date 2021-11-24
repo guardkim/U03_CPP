@@ -45,7 +45,7 @@ protected:
 
 public: 
 	FORCEINLINE const FFeetData& GetData() { return Data; }
-
+	FORCEINLINE bool GetIkMode() { return bIkMode; }
 public:	
 	UCFeetComponent();
 
@@ -57,10 +57,18 @@ public:
 
 private:
 	void Trace(FName InSocket, float& OutDistance, FRotator& OutRotation);
+
+private:
+	UFUNCTION()
+		void OnActorBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	UFUNCTION()
+		void OnActorEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
 private:
 	FFeetData Data;
 
 	class ACharacter* OwnerCharacter;
 	float CapsuleHalfHeight;
+
+	bool bIkMode;
 		
 };

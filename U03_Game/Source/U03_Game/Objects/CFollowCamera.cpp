@@ -11,6 +11,8 @@ ACFollowCamera::ACFollowCamera()
 	CHelpers::CreateComponent(this, &Camera, "Camera");
 }
 
+
+
 void ACFollowCamera::BeginPlay()
 {
 	Super::BeginPlay();
@@ -31,6 +33,25 @@ void ACFollowCamera::Tick(float DeltaTime)
 
 	if(Timeline.IsPlaying())
 		Timeline.TickTimeline(DeltaTime);
+}
+
+void ACFollowCamera::SetTimeline()
+{
+	FOnTimelineFloat progress;
+	progress.BindUFunction(this, "OnProgress"); 
+	FOnTimelineEvent finish; // FOnTimelineEventStatic을 상속받는
+	finish.BindUFunction(this, "OnFinishProgress");
+
+	Timeline = FTimeline(); // 모든 기본값을 쓰레기값이 안들어가게 잡아줌
+	Timeline.AddInterpFloat(Spline->GetCurve(), progress); //커브 태워줌, 커브 태워서 뭐할건지
+	Timeline.SetTimelineFinishedFunc(finish);
+	Timeline.SetTimelineLengthMode(ETimelineLengthMode::TL_LastKeyFrame);//타임라임 다 돌면 y값을 어떻게 할건지(마지막프레임값으로)
+	Timeline.SetPlayRate(0.25f);//재생속도
+	Timeline.PlayFromStart();
+
+	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(),0);
+	CheckNull(controller);
+	controller->SetViewTarget(this);
 }
 
 void ACFollowCamera::OnProgress(float Output)

@@ -18,6 +18,8 @@ private:
 public:	
 	ACFollowCamera();
 
+	UFUNCTION(BlueprintCallable)
+		void SetTimeline();
 protected:
 	virtual void BeginPlay() override;
 
@@ -27,7 +29,7 @@ public:
 private:
 	UFUNCTION()
 		void OnProgress(float Output);// Dynamic Oneparam delegate
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void OnFinishProgress(); // 카메라가 다 돌았다면
 
 private:

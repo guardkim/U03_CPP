@@ -1,11 +1,22 @@
 #include "Example.h"
 #include "GameplayDebugger.h"
+#include "01_DebugCategory/CGameplayDebugCategory.h"
 
 #define LOCTEXT_NAMESPACE "FExampleModule"
 
 void FExampleModule::StartupModule()
 {
 	UE_LOG(LogTemp,Error, L"START MODULE");
+
+	// DebugCategory
+	{
+		IGameplayDebugger& gameplayDebugger = IGameplayDebugger::Get(); // Singletone °´Ã¼ ¾ò¾î¿È
+
+		IGameplayDebugger::FOnGetCategory category = IGameplayDebugger::FOnGetCategory::CreateStatic(&CGameplayDebugCategory::MakeInstance);
+
+		gameplayDebugger.RegisterCategory("ExampleCategory", category, EGameplayDebuggerCategoryState::EnabledInGameAndSimulate, 5);
+		gameplayDebugger.NotifyCategoriesChanged();
+	}
 }
 
 void FExampleModule::ShutdownModule()

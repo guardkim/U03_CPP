@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PostProcessComponent.h"
 #include "Components/CStatusComponent.h"
 #include "Components/COptionComponent.h"
 #include "Components/CStateComponent.h"
@@ -23,6 +24,7 @@ ACPlayer::ACPlayer()
 	//Create SceneComponent
 	CHelpers::CreateComponent<USpringArmComponent>(this, &SpringArm, "SpringArm", GetMesh());
 	CHelpers::CreateComponent<UCameraComponent>(this, &Camera, "Camera", SpringArm);
+	CHelpers::CreateComponent<UPostProcessComponent>(this, &PostProcess, "PostProcess", GetRootComponent());
 
 	//Create ActorComponent
 	CHelpers::CreateActorComponent(this, &Action, "Action");
@@ -56,6 +58,15 @@ ACPlayer::ACPlayer()
 	GetCharacterMovement()->MaxWalkSpeed = Status->GetSprintSpeed();
 	GetCharacterMovement()->RotationRate = FRotator(0, 720, 0); //Yaw회전이 빨라짐
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	UTexture* dirtMask;
+	CHelpers::GetAsset<UTexture>(&dirtMask, "Texture2D'/Game/Textures/Character/T_SpeedLine.T_SpeedLine'");
+	PostProcess->bEnabled = true; // 포스트 프로세스 켜줌(켜줘야 사용가능)
+	PostProcess->Settings.BloomDirtMask = dirtMask;
+	PostProcess->Settings.bOverride_BloomDirtMask = false;
+	PostProcess->Settings.bOverride_BloomDirtMaskIntensity = false;
+	PostProcess->Settings.BloomDirtMaskIntensity = 25.0f;
+
 	
 
 	//Widget
@@ -319,10 +330,19 @@ float ACPlayer::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContr
 }
 void ACPlayer::Hitted()
 {
+	PostProcess->Settings.bOverride_BloomDirtMask = true;
+	PostProcess->Settings.bOverride_BloomDirtMaskIntensity = true;
+	UKismetSystemLibrary::K2_SetTimer(this, "Hitted_End", 0.2f, false);
 	Montages->PlayHitted();
 	Status->SetMove();
 
 
+}
+
+void ACPlayer::Hitted_End()
+{
+	PostProcess->Settings.bOverride_BloomDirtMask = false;
+	PostProcess->Settings.bOverride_BloomDirtMaskIntensity = false;
 }
 
 void ACPlayer::Dead()

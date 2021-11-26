@@ -39,6 +39,8 @@ private:
 		class UCActionComponent* Action;
 	UPROPERTY(VisibleDefaultsOnly)
 		class UCFeetComponent* Feet;
+	UPROPERTY(VisibleDefaultsOnly)
+		class UPostProcessComponent* PostProcess;
 
 public:
 	FORCEINLINE class UCUserWidget_Select* GetSelectWidget() { return SelectWidget; }
@@ -95,6 +97,9 @@ private:
 	void OnInteract();
 
 	void Hitted();
+	UFUNCTION() 
+		void Hitted_End();
+
 	void Dead();
 	void End_Dead();
 public:

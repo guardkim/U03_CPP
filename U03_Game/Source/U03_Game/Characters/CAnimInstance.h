@@ -17,11 +17,14 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		float Direction;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+		bool bFalling;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		EActionType ActionType;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		FFeetData FeetData;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 		bool bIkMode;
+	
 public:
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;

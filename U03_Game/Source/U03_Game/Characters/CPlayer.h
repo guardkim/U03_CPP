@@ -14,6 +14,9 @@ class U03_GAME_API ACPlayer : public ACharacter, public IICharacter, public IGen
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamID")
 		uint8 TeamID = 0; //플레이어, 적은1번
+	UPROPERTY(EditDefaultsOnly, Category = "Smear")
+		float SmearLength = 0.1f;
+
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -70,6 +73,8 @@ private:
 	void OnWalk();
 	void OffWalk();
 	void OnEvade();
+	UFUNCTION()
+		void EndEvade();
 	
 private:
 	void Begin_Backstep();
@@ -78,6 +83,9 @@ private:
 public:
 	void End_Backstep();
 	void End_Roll();
+
+private:
+	void UpdateSmear();
 
 private:
 	UFUNCTION() void OnFist();

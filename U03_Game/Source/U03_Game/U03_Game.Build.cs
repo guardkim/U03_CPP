@@ -15,7 +15,7 @@ public class U03_Game : ModuleRules
 			"AIModule",
 			"GameplayTasks",
 			"ProceduralMeshComponent",
-			"Example"
+			"Example",
 		});
 
 		PublicIncludePaths.Add(ModuleDirectory);

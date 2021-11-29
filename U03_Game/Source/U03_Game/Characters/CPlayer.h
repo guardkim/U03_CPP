@@ -16,6 +16,8 @@ private:
 		uint8 TeamID = 0; //플레이어, 적은1번
 	UPROPERTY(EditDefaultsOnly, Category = "Smear")
 		float SmearLength = 0.1f;
+	UPROPERTY(EditDefaultsOnly)
+		class UCDataAsset* Test_DataAsset;
 
 
 private:

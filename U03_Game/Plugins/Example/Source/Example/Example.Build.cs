@@ -25,7 +25,12 @@ public class Example : ModuleRules
 				"SlateCore",
 				"GameplayDebugger",
 				"EditorStyle",
-				"LevelEditor"
+				"LevelEditor",
+				"Projects",
+				"UnrealEd",
+				"AssetTools",
+				"PropertyEditor",
+				"U03_Game"
 			}
 			);
 

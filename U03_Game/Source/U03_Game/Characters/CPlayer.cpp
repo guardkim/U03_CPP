@@ -16,6 +16,7 @@
 #include "Widgets/CUserWidget_Select.h"
 #include "Widgets/CUserWidget_SelectItem.h"
 #include "Objects/CInteractDoor.h"
+#include "03_CustomDataAsset/CDataAsset.h"
 
 ACPlayer::ACPlayer()
 {
@@ -72,6 +73,9 @@ ACPlayer::ACPlayer()
 	//Widget
 	CHelpers::GetClass<UCUserWidget_Select>(&SelectWidgetClass, "WidgetBlueprint'/Game/Widgets/WB_Select.WB_Select_C'");
 
+
+	//Custom DA Test
+	CHelpers::GetAsset<UCDataAsset>(&Test_DataAsset, "CDataAsset'/Game/Objects/DA_Test1.DA_Test1'");
 }
 
 
@@ -109,6 +113,12 @@ void ACPlayer::BeginPlay()
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACPlayer::OnBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this,&ACPlayer::OnEndOverlap);
+
+	if (!!Test_DataAsset)
+	{
+		CLog::Print(Test_DataAsset->GetName().ToString());
+		CLog::Print(Test_DataAsset->GetValue());
+	}
 }
 
 void ACPlayer::Tick(float DeltaTime)

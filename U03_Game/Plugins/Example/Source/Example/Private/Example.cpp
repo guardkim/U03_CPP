@@ -1,8 +1,12 @@
 #include "Example.h"
 #include "GameplayDebugger.h"
 #include "LevelEditor.h"
+#include "Interfaces/IPluginManager.h"
+#include "Styling/SlateStyleRegistry.h"
+#include "AssetToolsModule.h"
 #include "01_DebugCategory/CGameplayDebugCategory.h"
 #include "02_ToolbarCommand/CToolbarCommand.h"
+#include "03_CustomDataAsset/CDataAssetToolAction.h"
 
 #define LOCTEXT_NAMESPACE "FExampleModule"
 
@@ -14,6 +18,23 @@ void FExampleModule::StartupModule()
 		GLog->Log(brush->GetResourceName().ToString());
 
 	UE_LOG(LogTemp,Error, L"START MODULE");
+
+	//StyleSet
+	{
+		//스타일셋 생성
+		StyleSet = MakeShareable(new FSlateStyleSet("ExampleStyle"));//Shared포인터로 만들어줌 
+
+		//컨텐츠 디렉토리 루트 잡아주기
+		FString path = IPluginManager::Get().FindPlugin("Example")->GetContentDir();//플러그인중 Example이란 플러그인의 Content브라우저를 잡아줌
+		StyleSet->SetContentRoot(path);
+
+		//아이콘 얻어서 세팅해주기
+		FSlateImageBrush* brush = new FSlateImageBrush(path / L"Icon.png", FVector2D(48,48)); // /는 스트링 두개를 이어준다
+		StyleSet->Set("Example.ToolbarIcon", brush);
+
+		//실제 등록                 
+		FSlateStyleRegistry::RegisterSlateStyle(*StyleSet.Get());
+	}
 
 	// DebugCategory
 	{
@@ -35,17 +56,46 @@ void FExampleModule::StartupModule()
 		ToolbarExtender = MakeShareable(new FExtender()); // new FExnteder;
 
 		//실제 툴바에 버튼 추가
+		TSharedPtr<FUICommandList> commandList = MakeShareable(new FUICommandList());
+		commandList->MapAction
+		(
+			CToolbarCommand::Get().Button,
+			FExecuteAction::CreateRaw(this, &FExampleModule::ToolbarButton_Clicked),
+			FCanExecuteAction()
+		);
 		Extension = ToolbarExtender->AddToolBarExtension
 		(
 			"Compile",
 			EExtensionHook::After,
-			nullptr,
+			commandList,
 			FToolBarExtensionDelegate::CreateRaw(this, &FExampleModule::AddToolbarExtension)
 		);
 
 		//(1) 툴바확장 -> (2) Extension 패널 생성 -> (3)레벨 에디터에 붙여주기
 		FLevelEditorModule& levelEditor =  FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
 		levelEditor.GetToolBarExtensibilityManager()->AddExtender(ToolbarExtender);// 툴바 사이가 벌려짐
+
+	}
+	
+	//Asset Tool
+	{
+		//에셋툴 모듈 매니저 가져오기
+		IAssetTools& assetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+
+		//카테고리 설정(기타 카테고리)
+		//EAssetTypeCategories::Type category = EAssetTypeCategories::Misc; //기타 카테고리
+		EAssetTypeCategories::Type category = assetTools.RegisterAdvancedAssetCategory(NAME_None,FText::FromString("Awesome Category")); //커스텀 카테고리
+
+
+		//애셋 툴 액션 생성
+		Action = MakeShareable(new CDataAssetToolAction(category));
+
+		//애셋툴에 액션 등록
+		assetTools.RegisterAssetTypeActions(Action.ToSharedRef());
+	}
+	
+	//Detail Panel
+	{
 
 	}
 }
@@ -62,6 +112,8 @@ void FExampleModule::ShutdownModule()
 	// 해제
 		gameplayDebugger.UnregisterCategory("ExampleCategory");
 	}
+	FSlateStyleRegistry::UnRegisterSlateStyle(*StyleSet.Get());
+	StyleSet.Reset();
 
 	ToolbarExtender->RemoveExtension(Extension.ToSharedRef());
 	ToolbarExtender.Reset();
@@ -70,7 +122,7 @@ void FExampleModule::ShutdownModule()
 void FExampleModule::AddToolbarExtension(class FToolBarBuilder& InBuilder)
 {
 
-	FSlateIcon icon = FSlateIcon(FEditorStyle::GetStyleSetName(),"LevelEditor.SelectMode");
+	FSlateIcon icon = FSlateIcon("ExampleStyle","Example.ToolbarIcon");
 	InBuilder.AddToolBarButton
 	(
 		CToolbarCommand::Get().Button,
@@ -79,6 +131,11 @@ void FExampleModule::AddToolbarExtension(class FToolBarBuilder& InBuilder)
 		FText::FromString("NoJam"),
 		icon
 	);
+}
+
+void FExampleModule::ToolbarButton_Clicked()
+{
+	UE_LOG(LogTemp, Error, L"Hello Hell World~~~");
 }
 
 #undef LOCTEXT_NAMESPACE

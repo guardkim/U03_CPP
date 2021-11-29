@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Styling/SlateStyle.h"
+#include "IAssetTypeActions.h"
 #include "Modules/ModuleManager.h"
 
 class FExampleModule : public IModuleInterface
@@ -12,9 +13,11 @@ public:
 
 private:
 	void AddToolbarExtension(class FToolBarBuilder& InBuilder);
+	void ToolbarButton_Clicked();
 private:
 	TSharedPtr<FExtender> ToolbarExtender;
 	TSharedPtr<const FExtensionBase> Extension;
 	TSharedPtr<FSlateStyleSet> StyleSet;
+	TSharedPtr<IAssetTypeActions> Action;
 
 };

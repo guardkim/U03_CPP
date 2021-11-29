@@ -1,4 +1,5 @@
 #include "CGameplayDebugCategory.h"
+#include "GameFramework/PlayerController.h"
 
 CGameplayDebugCategory::CGameplayDebugCategory()
 {
@@ -24,7 +25,7 @@ void CGameplayDebugCategory::CollectData(class APlayerController* OwnerPC, class
 		Data.Location = DebugActor->GetActorLocation();
 	}
 }
-void CGameplayDebugCategory::DrawData(class APlayerController* OwnerPC, FGameplayDebuggerCanvasContext& CanvasContext)
+void CGameplayDebugCategory::DrawData(APlayerController* OwnerPC, FGameplayDebuggerCanvasContext& CanvasContext)
 {
 	if (!!Data.Actor)
 	{

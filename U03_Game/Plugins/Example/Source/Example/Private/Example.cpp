@@ -4,9 +4,12 @@
 #include "Interfaces/IPluginManager.h"
 #include "Styling/SlateStyleRegistry.h"
 #include "AssetToolsModule.h"
+#include "PropertyEditorModule.h"
 #include "01_DebugCategory/CGameplayDebugCategory.h"
 #include "02_ToolbarCommand/CToolbarCommand.h"
 #include "03_CustomDataAsset/CDataAssetToolAction.h"
+#include "04_EditorDetailPanel/CEditorDetailPanel.h"
+#include "Objects/CButtonActor.h"
 
 #define LOCTEXT_NAMESPACE "FExampleModule"
 
@@ -96,7 +99,15 @@ void FExampleModule::StartupModule()
 	
 	//Detail Panel
 	{
+		//디테일패널(PropertyEditor 얻어오기)
+		FPropertyEditorModule& editor = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
 
+		//특정 액터(CButtonActor)에 우리가 만든 CEditorDetailPanel 패널 붙이기(버튼 들어있음)
+		editor.RegisterCustomClassLayout
+		(
+			ACButtonActor::StaticClass()->GetFName(),
+			FOnGetDetailCustomizationInstance::CreateStatic(&CEditorDetailPanel::MakeInstance)
+		);
 	}
 }
 

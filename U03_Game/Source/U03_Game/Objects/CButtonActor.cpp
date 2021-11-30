@@ -31,7 +31,7 @@ void ACButtonActor::ApplyColor(FLinearColor InColor)
 	UMaterialInstanceConstant* material = Cast<UMaterialInstanceConstant>(Mesh->GetMaterial(0));
 	for (FVectorParameterValue& value : material->VectorParameterValues)
 	{
-		if(value.ParameterInfo.Name.Compare("Color"))
+		if(value.ParameterInfo.Name.Compare("Color") == 0)
 			material->SetVectorParameterValueEditorOnly(value.ParameterInfo.Name,InColor);
 		//material->SetVectorParameterValueEditorOnly("Color", InColor);
 	}

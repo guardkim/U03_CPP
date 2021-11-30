@@ -8,6 +8,7 @@ ACReadActor::ACReadActor()
 
 	UStaticMesh* mesh;
 	CHelpers::GetAsset<UStaticMesh>(&mesh, "StaticMesh'/Game/StaticMeshes/Cube.Cube'");
+	Mesh->SetStaticMesh(mesh);
 
 	UMaterialInstanceConstant* material;
 	CHelpers::GetAsset<UMaterialInstanceConstant>(&material, "MaterialInstanceConstant'/Game/Materials/MAT_VertexColor_Inst.MAT_VertexColor_Inst'");
